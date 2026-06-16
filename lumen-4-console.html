@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quest Lumen — websites that glow</title>
+<meta name="description" content="Quest Lumen is a remote web design and development studio. We design, build, and ship fast, luminous websites." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0A0B0E;
+    --panel:#12141A;
+    --panel-2:#0E1015;
+    --text:#E4E8EF;
+    --muted:#79828F;
+    --acc:#4DFF88;
+    --acc-dim:#2BCB66;
+    --hair:rgba(228,232,239,.09);
+    --hair-2:rgba(228,232,239,.14);
+    --glow:rgba(77,255,136,.55);
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"Hanken Grotesk",system-ui,sans-serif;
+    --maxw:1180px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  /* faint scanline texture via tiled SVG data-uri — NO css gradients */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3' height='3'%3E%3Crect width='3' height='1' fill='%23ffffff' fill-opacity='0.014'/%3E%3C/svg%3E");
+    background-repeat:repeat;
+    opacity:.7;
+  }
+  ::selection{background:var(--acc);color:#04130A}
+
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--mono)}
+  .acc{color:var(--acc)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+  /* ---------- buttons / chips ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-weight:600;font-size:13.5px;letter-spacing:.02em;
+    padding:13px 20px;border-radius:8px;cursor:pointer;border:1px solid transparent;
+    transition:transform .12s ease, box-shadow .25s ease, background .2s ease, border-color .2s ease;
+    will-change:transform;
+  }
+  .btn-acc{background:var(--acc);color:#04130A;box-shadow:0 0 0 1px rgba(77,255,136,.3),0 8px 34px -8px var(--glow)}
+  .btn-acc:hover{box-shadow:0 0 0 1px rgba(77,255,136,.5),0 12px 46px -8px var(--glow)}
+  .btn-ghost{background:var(--panel);color:var(--text);border-color:var(--hair-2)}
+  .btn-ghost:hover{border-color:var(--acc);color:var(--acc)}
+  .btn:active{transform:scale(.96)}
+
+  kbd{
+    font-family:var(--mono);font-size:11.5px;font-weight:600;
+    background:#1B1E26;color:var(--text);
+    border:1px solid var(--hair-2);
+    border-bottom-width:2px;
+    border-radius:5px;padding:3px 7px;line-height:1;
+    display:inline-flex;align-items:center;min-width:20px;justify-content:center;
+    box-shadow:0 1px 0 rgba(0,0,0,.4);
+  }
+
+  .tag{
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--acc);display:inline-flex;align-items:center;gap:9px;
+  }
+  .tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px 1px var(--glow)}
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(11px);
+    background:rgba(10,11,14,.72);
+    border-bottom:1px solid var(--hair);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:11px;font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .logo .mark{
+    width:26px;height:26px;border-radius:7px;border:1px solid var(--acc);
+    display:grid;place-items:center;position:relative;
+    box-shadow:0 0 14px -2px var(--glow), inset 0 0 10px -4px var(--glow);
+  }
+  .logo .mark i{width:8px;height:8px;background:var(--acc);border-radius:2px;box-shadow:0 0 8px 1px var(--glow);display:block}
+  .logo b{color:var(--muted);font-weight:400}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{font-family:var(--mono);font-size:13px;color:var(--muted);transition:color .18s ease}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  @media(max-width:780px){.nav-links{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:74px 0 88px;overflow:hidden}
+  #core-canvas{position:absolute;top:-40px;right:-60px;width:560px;height:560px;z-index:1;pointer-events:none;opacity:.95}
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  @media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:40px}#core-canvas{width:360px;height:360px;top:-30px;right:-110px;opacity:.5}}
+
+  h1.hero-h{
+    font-family:var(--mono);font-weight:800;line-height:1.04;letter-spacing:-.03em;
+    font-size:clamp(38px,6vw,66px);margin:20px 0 0;
+  }
+  h1.hero-h .lo{color:var(--muted);font-weight:500}
+  .hero-lead{font-size:18px;color:#AEB6C2;max-width:30em;margin-top:22px}
+  .hero-actions{display:flex;align-items:center;gap:14px;margin-top:30px;flex-wrap:wrap}
+  .hero-hint{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+
+  /* ---------- terminal / command palette ---------- */
+  .terminal{
+    background:var(--panel);
+    border:1px solid var(--hair-2);
+    border-radius:13px;
+    box-shadow:0 40px 90px -40px rgba(0,0,0,.9), 0 0 0 1px rgba(77,255,136,.05), 0 0 60px -30px var(--glow);
+    overflow:hidden;
+    font-family:var(--mono);
+  }
+  .term-bar{
+    display:flex;align-items:center;gap:8px;padding:12px 15px;
+    background:var(--panel-2);border-bottom:1px solid var(--hair);
+  }
+  .term-bar .dot{width:11px;height:11px;border-radius:50%;background:#2A2E38}
+  .term-bar .dot.g{background:var(--acc-dim)}
+  .term-title{margin-left:10px;font-size:12px;color:var(--muted)}
+  .term-title .acc{color:var(--acc)}
+  .term-body{padding:20px 20px 22px;font-size:13.5px;line-height:1.85;min-height:268px}
+  .term-line{white-space:pre-wrap;word-break:break-word}
+  .prompt{color:var(--acc)}
+  .path{color:#6E8BFF}
+  .cmd{color:var(--text)}
+  .ok{color:var(--acc)}
+  .dim{color:var(--muted)}
+  .cursor{display:inline-block;width:8px;height:16px;background:var(--acc);vertical-align:-2px;margin-left:2px;box-shadow:0 0 8px var(--glow)}
+  .blink{animation:blink 1.05s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* ---------- section scaffolding ---------- */
+  section{position:relative;z-index:2;padding:96px 0;border-top:1px solid var(--hair)}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:46px;flex-wrap:wrap}
+  .sec-head h2{font-family:var(--mono);font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;line-height:1.1}
+  .sec-head h2 .lo{color:var(--muted);font-weight:500}
+  .sec-head p{color:var(--muted);max-width:34em;font-size:15px}
+  .log-prefix{font-family:var(--mono);font-size:12px;color:var(--acc);display:block;margin-bottom:12px;opacity:.9}
+
+  /* reveal — visible by default, animated when JS active */
+  .reveal{opacity:1;transform:none}
+  .js-on .reveal{opacity:0;transform:translateY(22px)}
+  .js-on .reveal.in{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+
+  /* ---------- services / code-panel cards ---------- */
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:880px){.svc-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.svc-grid{grid-template-columns:1fr}}
+  .card{
+    background:var(--panel);border:1px solid var(--hair);border-radius:12px;overflow:hidden;
+    transition:transform .18s ease,border-color .25s ease,box-shadow .3s ease;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--hair-2);box-shadow:0 24px 60px -34px rgba(0,0,0,.9),0 0 40px -28px var(--glow)}
+  .card-top{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
+  .card-top .fname{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .card-top .fname b{color:var(--acc);font-weight:600}
+  .card-body{padding:18px 18px 22px}
+  .card-body .num{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+  .card-body h3{font-family:var(--mono);font-weight:700;font-size:18px;margin:9px 0 8px;letter-spacing:-.01em}
+  .card-body p{font-size:14px;color:#9AA3AF;line-height:1.65}
+  .card-body .meta{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--hair);border-radius:5px;padding:3px 8px}
+
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--panel)}
+  @media(max-width:680px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{padding:30px 26px;border-right:1px solid var(--hair)}
+  .stat:last-child{border-right:none}
+  @media(max-width:680px){.stat:nth-child(2){border-right:none}.stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--hair)}}
+  .stat .v{font-family:var(--mono);font-weight:800;font-size:38px;color:var(--text);letter-spacing:-.03em;line-height:1}
+  .stat .v .u{color:var(--acc);font-size:24px}
+  .stat .k{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px;letter-spacing:.04em}
+
+  /* ---------- work ---------- */
+  .work-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:820px){.work-grid{grid-template-columns:1fr}}
+  .work-card{background:var(--panel);border:1px solid var(--hair);border-radius:13px;overflow:hidden;transition:transform .2s ease,border-color .25s ease,box-shadow .3s ease}
+  .work-card:hover{transform:translateY(-4px);border-color:var(--hair-2);box-shadow:0 30px 70px -38px rgba(0,0,0,.9),0 0 50px -30px var(--glow)}
+  .browser{background:var(--panel-2)}
+  .browser-bar{display:flex;align-items:center;gap:7px;padding:10px 13px;border-bottom:1px solid var(--hair)}
+  .browser-bar .dot{width:9px;height:9px;border-radius:50%;background:#2A2E38}
+  .url{margin-left:8px;flex:1;font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--hair);border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:7px}
+  .url .lock{color:var(--acc)}
+  .mock{height:190px;position:relative;overflow:hidden}
+  .work-meta{padding:18px 20px 22px;border-top:1px solid var(--hair)}
+  .work-meta .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .work-meta h3{font-family:var(--mono);font-size:16px;font-weight:700}
+  .work-meta .ind{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .work-meta p{font-size:13.5px;color:#9AA3AF;margin-top:8px}
+  .score{font-family:var(--mono);font-size:11px;color:var(--acc);border:1px solid rgba(77,255,136,.3);border-radius:20px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+
+  /* ---------- process / log feed ---------- */
+  .feed{border-left:2px solid var(--hair);margin-left:6px;padding-left:0}
+  .feed .step{position:relative;padding:0 0 30px 30px}
+  .feed .step:last-child{padding-bottom:0}
+  .feed .step::before{content:"";position:absolute;left:-7px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--acc-dim)}
+  .feed .step.lit::before{background:var(--acc);box-shadow:0 0 12px 1px var(--glow);border-color:var(--acc)}
+  .feed .ts{font-family:var(--mono);font-size:11.5px;color:var(--acc);letter-spacing:.02em}
+  .feed h4{font-family:var(--mono);font-size:16px;font-weight:700;margin:5px 0 6px}
+  .feed p{font-size:14px;color:#9AA3AF;max-width:46em}
+
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  @media(max-width:820px){.about-grid{grid-template-columns:1fr;gap:34px}}
+  .about p{color:#AEB6C2;font-size:16px;margin-bottom:16px;max-width:38em}
+
+  /* ---------- contact CTA ---------- */
+  .cta{
+    background:var(--panel);border:1px solid var(--hair-2);border-radius:16px;
+    padding:54px 46px;position:relative;overflow:hidden;
+    box-shadow:0 0 90px -50px var(--glow);
+  }
+  .cta-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+  @media(max-width:780px){.cta-inner{grid-template-columns:1fr;gap:28px}}
+  .cta h2{font-family:var(--mono);font-weight:800;font-size:clamp(28px,4vw,44px);letter-spacing:-.03em;line-height:1.05}
+  .cta h2 .lo{color:var(--muted);font-weight:500}
+  .cta p{color:#AEB6C2;margin-top:16px;font-size:16px}
+  .cta-card{background:var(--panel-2);border:1px solid var(--hair);border-radius:11px;padding:20px;font-family:var(--mono);font-size:13px}
+  .cta-card .l{display:flex;justify-content:space-between;padding:7px 0;color:var(--muted);border-bottom:1px dashed var(--hair)}
+  .cta-card .l:last-child{border-bottom:none}
+  .cta-card .l span:last-child{color:var(--text)}
+  .cta-card .l .ok{color:var(--acc)}
+  .cta-mail{font-family:var(--mono);font-size:15px;color:var(--acc);display:inline-flex;align-items:center;gap:9px;margin-top:22px}
+  .cta-mail:hover{text-decoration:underline}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--hair);padding:46px 0 56px;position:relative;z-index:2}
+  .foot-grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .foot-grid .col h5{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .foot-grid .col a{display:block;font-family:var(--mono);font-size:13.5px;color:#9AA3AF;padding:3px 0;transition:color .18s}
+  .foot-grid .col a:hover{color:var(--acc)}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:42px;padding-top:24px;border-top:1px solid var(--hair);flex-wrap:wrap}
+  .foot-bottom .copy{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .foot-status{font-family:var(--mono);font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:9px}
+  .foot-status i{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 9px 1px var(--glow);display:block}
+
+  .fallback #core-canvas{display:none}
+
+  @media (prefers-reduced-motion:reduce){
+    .blink{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top" aria-label="Quest Lumen home">
+      <span class="mark"><i></i></span>
+      <span>quest<b>·</b>lumen</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#services">services</a>
+      <a href="#work">work</a>
+      <a href="#process">process</a>
+      <a href="#about">studio</a>
+    </nav>
+    <div class="nav-cta">
+      <span class="hero-hint" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+      <a href="#contact" class="btn btn-acc">./start-a-project</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="hero" style="border-top:none">
+  <canvas id="core-canvas" aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag">Web design &amp; development studio · remote</span>
+      <h1 class="hero-h">Ship at the <span class="lo">speed of</span> <span class="acc">light.</span></h1>
+      <p class="hero-lead">Quest Lumen designs, builds, and ships fast, luminous websites. Real engineering, measured in milliseconds and Lighthouse points, not adjectives.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-acc">Start a project</a>
+        <a href="#work" class="btn btn-ghost">View the work</a>
+      </div>
+      <p class="hero-hint" style="margin-top:20px">Run anywhere · sub-1s first paint · <span class="acc">100</span> Lighthouse target</p>
+    </div>
+
+    <!-- command palette / terminal -->
+    <div class="terminal" aria-label="Terminal demo">
+      <div class="term-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot g"></span>
+        <span class="term-title">— <span class="acc">lumen</span>@studio: ~/your-site</span>
+      </div>
+      <div class="term-body" id="term"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="log-prefix mono">[ 01 ] services.json</span>
+        <h2>What we ship. <span class="lo">Six things, done properly.</span></h2>
+      </div>
+      <p>No retainers full of meetings. Each engagement is scoped to a deliverable you can open in a browser and measure.</p>
+    </div>
+
+    <div class="svc-grid">
+      <article class="card reveal">
+        <div class="card-top"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:#2A2E38;display:inline-block"></span><span class="fname"><b>design</b>.figma</span></div>
+        <div class="card-body">
+          <span class="num">001</span>
+          <h3>Web Design</h3>
+          <p>Layout, type, and color systems drawn from your actual content. We design in the browser early so what you approve is what ships.</p>
+          <div class="meta"><span class="pill">UI systems</span><span class="pill">prototypes</span><span class="pill">design tokens</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:#2A2E38;display:inline-block"></span><span class="fname"><b>build</b>.tsx</span></div>
+        <div class="card-body">
+          <span class="num">002</span>
+          <h3>Web Development</h3>
+          <p>Hand-written front-end code on modern frameworks or static HTML. Accessible markup, typed components, and a build you can hand to your team.</p>
+          <div class="meta"><span class="pill">React / Astro</span><span class="pill">a11y</span><span class="pill">CMS wiring</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:#2A2E38;display:inline-block"></span><span class="fname"><b>brand</b>.svg</span></div>
+        <div class="card-body">
+          <span class="num">003</span>
+          <h3>Brand &amp; Identity</h3>
+          <p>Logotype, palette, and a usage guide tight enough to keep things consistent six months after launch, when you are moving fast.</p>
+          <div class="meta"><span class="pill">logotype</span><span class="pill">color</span><span class="pill">guidelines</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:#2A2E38;display:inline-block"></span><span class="fname"><b>motion</b>.gsap</span></div>
+        <div class="card-body">
+          <span class="num">004</span>
+          <h3>Motion &amp; Interaction</h3>
+          <p>Scroll choreography, state transitions, and WebGL accents that load fast and respect reduced-motion. Movement with a reason, never filler.</p>
+          <div class="meta"><span class="pill">GSAP</span><span class="pill">Three.js</span><span class="pill">micro-UX</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:#2A2E38;display:inline-block"></span><span class="fname"><b>perf</b>.lighthouse</span></div>
+        <div class="card-body">
+          <span class="num">005</span>
+          <h3>SEO &amp; Performance</h3>
+          <p>Core Web Vitals, structured data, and an image pipeline tuned for real devices. We chase the green score and the rankings behind it.</p>
+          <div class="meta"><span class="pill">CWV</span><span class="pill">schema</span><span class="pill">image opt</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:#2A2E38;display:inline-block"></span><span class="fname"><b>care</b>.yml</span></div>
+        <div class="card-body">
+          <span class="num">006</span>
+          <h3>Care &amp; Hosting</h3>
+          <p>Managed hosting, dependency updates, uptime checks, and a human who answers when something breaks. The boring part, handled.</p>
+          <div class="meta"><span class="pill">hosting</span><span class="pill">monitoring</span><span class="pill">backups</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section style="padding-top:0;border-top:none">
+  <div class="wrap">
+    <span class="log-prefix mono reveal">[ 02 ] stats --since 2021</span>
+    <div class="stats reveal">
+      <div class="stat"><div class="v" data-count="60">0<span class="u">+</span></div><div class="k">sites shipped</div></div>
+      <div class="stat"><div class="v" data-count="12">0</div><div class="k">industries served</div></div>
+      <div class="stat"><div class="v"><span class="u">&lt;</span><span data-count="1">0</span>s</div><div class="k">load-time target</div></div>
+      <div class="stat"><div class="v" data-count="4.9" data-dec="1">0</div><div class="k">client rating / 5</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WORK ================= -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="log-prefix mono">[ 03 ] selected-work/</span>
+        <h2>Selected work. <span class="lo">Shipped, measured, lit.</span></h2>
+      </div>
+      <p>A sample of recent launches. Names are illustrative; the scores are the point.</p>
+    </div>
+
+    <div class="work-grid">
+      <!-- card 1 -->
+      <article class="work-card reveal">
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url"><span class="lock">▲</span> halcyon-labs.com</span>
+          </div>
+          <div class="mock" style="background:#0C0E13">
+            <svg width="100%" height="100%" viewBox="0 0 480 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylized SaaS dashboard mockup">
+              <rect width="480" height="190" fill="#0C0E13"/>
+              <rect x="22" y="22" width="120" height="12" rx="3" fill="#4DFF88" opacity=".85"/>
+              <rect x="22" y="44" width="200" height="8" rx="3" fill="#2A2E38"/>
+              <rect x="22" y="78" width="135" height="86" rx="8" fill="#12141A" stroke="#1E2230"/>
+              <rect x="36" y="92" width="60" height="8" rx="2" fill="#2A2E38"/>
+              <polyline points="36,150 60,132 84,140 108,112 132,124" fill="none" stroke="#4DFF88" stroke-width="2.5"/>
+              <circle cx="132" cy="124" r="3.5" fill="#4DFF88"/>
+              <rect x="172" y="78" width="135" height="40" rx="8" fill="#12141A" stroke="#1E2230"/>
+              <rect x="172" y="124" width="135" height="40" rx="8" fill="#12141A" stroke="#1E2230"/>
+              <rect x="322" y="78" width="135" height="86" rx="8" fill="#101620" stroke="#1E2230"/>
+              <circle cx="389" cy="118" r="26" fill="none" stroke="#2A2E38" stroke-width="6"/>
+              <circle cx="389" cy="118" r="26" fill="none" stroke="#4DFF88" stroke-width="6" stroke-dasharray="120 60" transform="rotate(-90 389 118)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="work-meta">
+          <div class="row"><h3>Halcyon Labs</h3><span class="score">◷ 0.6s LCP</span></div>
+          <span class="ind">B2B analytics · marketing site + docs</span>
+          <p>Rebuilt a slow WordPress stack as a static Astro site. First paint dropped from 3.4s to under a second on mobile.</p>
+        </div>
+      </article>
+
+      <!-- card 2 -->
+      <article class="work-card reveal">
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url"><span class="lock">▲</span> nordweave.studio</span>
+          </div>
+          <div class="mock" style="background:#0A0D10">
+            <svg width="100%" height="100%" viewBox="0 0 480 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylized e-commerce product page mockup">
+              <rect width="480" height="190" fill="#0A0D10"/>
+              <rect x="24" y="26" width="180" height="138" rx="10" fill="#11151B" stroke="#1E2430"/>
+              <path d="M48 138 L92 84 L128 124 L160 96 L182 138 Z" fill="#1B2230"/>
+              <circle cx="78" cy="62" r="13" fill="#4DFF88" opacity=".8"/>
+              <rect x="228" y="34" width="150" height="14" rx="3" fill="#E4E8EF" opacity=".85"/>
+              <rect x="228" y="58" width="110" height="9" rx="3" fill="#2A2E38"/>
+              <rect x="228" y="76" width="200" height="7" rx="3" fill="#1E2230"/>
+              <rect x="228" y="90" width="180" height="7" rx="3" fill="#1E2230"/>
+              <rect x="228" y="118" width="92" height="30" rx="6" fill="#4DFF88"/>
+              <rect x="330" y="118" width="92" height="30" rx="6" fill="none" stroke="#2A2E38"/>
+            </svg>
+          </div>
+        </div>
+        <div class="work-meta">
+          <div class="row"><h3>Nordweave</h3><span class="score">◷ 100 SEO</span></div>
+          <span class="ind">Independent retail · storefront + brand</span>
+          <p>New identity and a headless storefront. Organic traffic up 38% in the quarter after launch on the same ad spend.</p>
+        </div>
+      </article>
+
+      <!-- card 3 -->
+      <article class="work-card reveal">
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url"><span class="lock">▲</span> tide-collective.org</span>
+          </div>
+          <div class="mock" style="background:#0B0E12">
+            <svg width="100%" height="100%" viewBox="0 0 480 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylized editorial homepage mockup">
+              <rect width="480" height="190" fill="#0B0E12"/>
+              <rect x="26" y="24" width="260" height="20" rx="3" fill="#E4E8EF" opacity=".9"/>
+              <rect x="26" y="52" width="200" height="20" rx="3" fill="#4DFF88" opacity=".85"/>
+              <rect x="26" y="92" width="140" height="9" rx="3" fill="#2A2E38"/>
+              <rect x="26" y="108" width="160" height="9" rx="3" fill="#1E2230"/>
+              <rect x="26" y="124" width="120" height="9" rx="3" fill="#1E2230"/>
+              <rect x="300" y="30" width="156" height="134" rx="10" fill="#11151B" stroke="#1E2430"/>
+              <line x1="318" y1="58" x2="438" y2="58" stroke="#2A2E38"/>
+              <line x1="318" y1="84" x2="438" y2="84" stroke="#2A2E38"/>
+              <line x1="318" y1="110" x2="400" y2="110" stroke="#4DFF88" opacity=".7"/>
+              <line x1="318" y1="136" x2="438" y2="136" stroke="#2A2E38"/>
+            </svg>
+          </div>
+        </div>
+        <div class="work-meta">
+          <div class="row"><h3>Tide Collective</h3><span class="score">◷ AA contrast</span></div>
+          <span class="ind">Non-profit · editorial + donations</span>
+          <p>An accessible publishing site with a giving flow. Fully keyboard-navigable and screen-reader tested before it went live.</p>
+        </div>
+      </article>
+
+      <!-- card 4 -->
+      <article class="work-card reveal">
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url"><span class="lock">▲</span> apse-architecture.com</span>
+          </div>
+          <div class="mock" style="background:#090C0F">
+            <svg width="100%" height="100%" viewBox="0 0 480 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylized portfolio grid mockup">
+              <rect width="480" height="190" fill="#090C0F"/>
+              <rect x="24" y="24" width="100" height="142" rx="8" fill="#10141A" stroke="#1E2430"/>
+              <rect x="134" y="24" width="100" height="68" rx="8" fill="#10141A" stroke="#1E2430"/>
+              <rect x="134" y="98" width="100" height="68" rx="8" fill="#13202A" stroke="#1E2430"/>
+              <rect x="244" y="24" width="100" height="142" rx="8" fill="#10141A" stroke="#1E2430"/>
+              <rect x="354" y="24" width="100" height="68" rx="8" fill="#13202A" stroke="#1E2430"/>
+              <rect x="354" y="98" width="100" height="68" rx="8" fill="#10141A" stroke="#1E2430"/>
+              <rect x="40" y="150" width="60" height="6" rx="2" fill="#4DFF88" opacity=".7"/>
+              <rect x="260" y="150" width="60" height="6" rx="2" fill="#2A2E38"/>
+              <circle cx="184" cy="58" r="14" fill="none" stroke="#4DFF88" stroke-width="2" opacity=".7"/>
+            </svg>
+          </div>
+        </div>
+        <div class="work-meta">
+          <div class="row"><h3>Apse Architecture</h3><span class="score">◷ 0.4s TTI</span></div>
+          <span class="ind">Studio portfolio · image-heavy grid</span>
+          <p>A gallery site that stays sharp and fast with hundreds of project photos, served responsively and lazily without the jank.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROCESS ================= -->
+<section id="process">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="log-prefix mono">[ 04 ] process.log</span>
+        <h2>How a build runs. <span class="lo">Five stages, one tail -f.</span></h2>
+      </div>
+      <p>Most projects ship in four to six weeks. You see progress on a live URL the whole way, not in a slide deck at the end.</p>
+    </div>
+
+    <div class="feed reveal" id="feed">
+      <div class="step">
+        <span class="ts mono">week 1 · 09:14 · discover</span>
+        <h4>Discover</h4>
+        <p>We read your analytics, talk to your team, and write down what the site actually has to do. Scope is fixed before any pixels move.</p>
+      </div>
+      <div class="step">
+        <span class="ts mono">week 1–2 · design</span>
+        <h4>Design</h4>
+        <p>Type, color, and layout, prototyped in the browser. You react to real screens, not mockups, and we iterate in days, not weeks.</p>
+      </div>
+      <div class="step">
+        <span class="ts mono">week 2–4 · build</span>
+        <h4>Build</h4>
+        <p>Front-end code, CMS wiring, and content load-in on a staging URL you can open any time. Daily commits, visible progress.</p>
+      </div>
+      <div class="step">
+        <span class="ts mono">week 4–5 · launch</span>
+        <h4>Launch</h4>
+        <p>Performance pass, accessibility audit, analytics, and DNS cutover. We watch the first 48 hours so you do not have to.</p>
+      </div>
+      <div class="step lit">
+        <span class="ts mono">ongoing · care</span>
+        <h4>Care</h4>
+        <p>Hosting, updates, and monitoring after launch. When the site needs a change, you email a person, and a person answers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <span class="log-prefix mono">[ 05 ] whoami</span>
+      <h2 style="font-family:var(--mono);font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;line-height:1.1;margin-bottom:22px">A small studio<br><span style="color:var(--muted);font-weight:500">that ships.</span></h2>
+      <p>Quest Lumen is a remote studio of designers and developers who like the same thing: a site that loads instantly and looks like someone cared. We work worldwide, in your time zone enough of the day to matter.</p>
+      <p>No account managers between you and the people writing the code. You talk to the team that builds the thing, start to finish.</p>
+      <div class="hero-actions" style="margin-top:26px">
+        <a href="#contact" class="btn btn-acc">Start a project</a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="terminal" aria-hidden="true">
+        <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot g"></span><span class="term-title">— <span class="acc">studio</span>.config</span></div>
+        <div class="term-body" style="min-height:auto">
+<span class="dim mono">// who you work with</span>
+<span class="mono"><span class="path">team</span> <span class="cmd">=</span> <span class="ok">"the people writing the code"</span></span>
+<span class="mono"><span class="path">timezone</span> <span class="cmd">=</span> <span class="ok">"yours, mostly"</span></span>
+<span class="mono"><span class="path">handoff</span> <span class="cmd">=</span> <span class="ok">"clean repo + docs"</span></span>
+<span class="mono"><span class="path">meetings</span> <span class="cmd">=</span> <span class="dim">"only the useful ones"</span></span>
+<br>
+<span class="dim mono">// what we refuse to ship</span>
+<span class="mono"><span class="cmd">reject</span>(<span class="ok">"3s load times"</span>)</span>
+<span class="mono"><span class="cmd">reject</span>(<span class="ok">"inaccessible markup"</span>)</span>
+<span class="mono"><span class="ok">✓</span> <span class="dim">build passed in 0.42s</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT CTA ================= -->
+<section id="contact" style="padding-bottom:110px">
+  <div class="wrap">
+    <div class="cta reveal">
+      <div class="cta-inner">
+        <div>
+          <span class="log-prefix mono">[ 06 ] init --new-project</span>
+          <h2>Let's light it up. <span class="lo">Tell us what you're building.</span></h2>
+          <p>Send a line about your project and timeline. We reply within one business day with a scope, a price, and a launch date you can hold us to.</p>
+          <a href="mailto:hello@questlumen.com" class="cta-mail mono">→ hello@questlumen.com</a>
+          <div class="hero-actions" style="margin-top:24px">
+            <a href="mailto:hello@questlumen.com" class="btn btn-acc">Start a project</a>
+            <span class="hero-hint">or press <kbd>⌘</kbd><kbd>K</kbd> in your head</span>
+          </div>
+        </div>
+        <div class="cta-card" aria-hidden="true">
+          <div class="l"><span>$ lumen new project</span><span class="ok">running</span></div>
+          <div class="l"><span>scope</span><span>fixed</span></div>
+          <div class="l"><span>timeline</span><span>4–6 weeks</span></div>
+          <div class="l"><span>pricing</span><span>flat fee</span></div>
+          <div class="l"><span>first reply</span><span class="ok">&lt; 1 day</span></div>
+          <div class="l"><span>status</span><span class="ok">accepting work</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="col" style="max-width:300px">
+        <a class="logo" href="#top" style="margin-bottom:14px"><span class="mark"><i></i></span><span>quest<b>·</b>lumen</span></a>
+        <p style="color:var(--muted);font-size:13.5px;line-height:1.6">A remote web design and development studio. We design, build, and ship fast, luminous websites.</p>
+      </div>
+      <div class="col">
+        <h5>Studio</h5>
+        <a href="#services">Services</a>
+        <a href="#work">Selected work</a>
+        <a href="#process">Process</a>
+        <a href="#about">About</a>
+      </div>
+      <div class="col">
+        <h5>Services</h5>
+        <a href="#services">Web design</a>
+        <a href="#services">Web development</a>
+        <a href="#services">Brand &amp; identity</a>
+        <a href="#services">SEO &amp; performance</a>
+      </div>
+      <div class="col">
+        <h5>Contact</h5>
+        <a href="mailto:hello@questlumen.com">hello@questlumen.com</a>
+        <a href="#contact">Start a project</a>
+        <span class="foot-status" style="margin-top:8px"><i></i> accepting new work</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="copy">© 2026 Quest Lumen. All rights reserved.</span>
+      <span class="foot-status">build: <span class="acc">passing</span> · uptime <span class="acc">99.98%</span></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= IMPORTMAP + THREE ================= -->
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<!-- GSAP + ScrollTrigger (UMD) -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+/* ---------- reduced motion ---------- */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.body.classList.add('js-on');
+
+/* =====================================================
+   1. TERMINAL — hand-coded scramble + typewriter
+   ===================================================== */
+(function(){
+  const term = document.getElementById('term');
+  if(!term) return;
+  const GLY = "!<>-_\\/[]{}—=+*^?#01abcdef";
+  const rand = a => a[Math.floor(Math.random()*a.length)];
+
+  // line model: {html builder using settled text}
+  // We type a command, then reveal output lines.
+  const promptHTML = '<span class="prompt">lumen@studio</span> <span class="path">~/your-site</span> <span class="prompt">$</span> ';
+
+  const cmd = "lumen build --fast --glow";
+  const outputs = [
+    {t:'<span class="ok">✓</span> <span class="cmd">designed</span> <span class="dim">— layout, type, color systems</span>'},
+    {t:'<span class="ok">✓</span> <span class="cmd">built</span>    <span class="dim">— accessible, typed front-end</span>'},
+    {t:'<span class="ok">✓</span> <span class="cmd">shipped</span>  <span class="dim">— in 4 weeks, on a fixed scope</span>'},
+    {t:'<span class="dim">────────────────────────────────</span>'},
+    {t:'<span class="cmd">Lighthouse</span> <span class="ok">100</span> · <span class="cmd">LCP</span> <span class="ok">0.6s</span> · <span class="cmd">a11y</span> <span class="ok">AA</span>'},
+    {t:'<span class="ok">●</span> <span class="dim">build passed · ready to deploy</span>'}
+  ];
+
+  function row(inner){
+    const d = document.createElement('div');
+    d.className = 'term-line';
+    d.innerHTML = inner;
+    term.appendChild(d);
+    return d;
+  }
+
+  if(REDUCED){
+    // static, fully visible
+    row(promptHTML + '<span class="cmd">'+cmd+'</span>');
+    outputs.forEach(o=>row(o.t));
+    return;
+  }
+
+  // --- scramble the command, then settle, then stream outputs
+  const cmdLine = row(promptHTML + '<span class="cmd" id="cmdtxt"></span><span class="cursor" id="cur"></span>');
+  const cmdEl = cmdLine.querySelector('#cmdtxt');
+  const cur = cmdLine.querySelector('#cur');
+
+  function scrambleType(target, el, done){
+    let frame = 0;
+    const reveal = []; // index revealed at frame
+    for(let i=0;i<target.length;i++) reveal[i] = Math.floor(i*2.2) + (3 + Math.floor(Math.random()*6));
+    const total = Math.max(...reveal) + 4;
+    function tick(){
+      let out = '';
+      for(let i=0;i<target.length;i++){
+        if(frame >= reveal[i]) out += target[i];
+        else if(frame >= reveal[i]-7) out += rand(GLY);
+        else out += '';
+      }
+      el.textContent = out;
+      frame++;
+      if(frame <= total){ requestAnimationFrame(()=>setTimeout(tick,16)); }
+      else { el.textContent = target; done && done(); }
+    }
+    tick();
+  }
+
+  function streamOutputs(i){
+    if(i>=outputs.length){ return; }
+    const r = row('');
+    // scramble-in each output line briefly
+    const target = outputs[i].t;
+    // we animate plain-text scramble of its textContent, then set html
+    const tmp = document.createElement('div'); tmp.innerHTML = target;
+    const plain = tmp.textContent;
+    let f = 0; const dur = Math.min(18, 6 + plain.length*0.4);
+    (function sc(){
+      if(f < dur){
+        let s='';
+        for(let k=0;k<plain.length;k++){ s += (Math.random()<f/dur)? plain[k] : rand(GLY); }
+        r.textContent = s; f++;
+        requestAnimationFrame(()=>setTimeout(sc,18));
+      } else {
+        r.innerHTML = target;
+        gsap && gsap.fromTo(r,{opacity:.2},{opacity:1,duration:.3});
+        setTimeout(()=>streamOutputs(i+1), 230);
+      }
+    })();
+  }
+
+  // kick off after a beat
+  setTimeout(()=>{
+    scrambleType(cmd, cmdEl, ()=>{
+      cur.classList.add('blink');
+      setTimeout(()=>{ cur.remove(); streamOutputs(0); }, 430);
+    });
+  }, 600);
+})();
+
+/* =====================================================
+   2. GSAP ScrollTrigger reveals + counters
+   ===================================================== */
+(function(){
+  if(typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined'){
+    // safety: show everything
+    document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger);
+
+  if(REDUCED){
+    document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));
+  } else {
+    document.querySelectorAll('.reveal').forEach((el)=>{
+      ScrollTrigger.create({
+        trigger: el, start:'top 88%',
+        onEnter:()=>el.classList.add('in'),
+        once:true
+      });
+    });
+    // process feed step lights
+    document.querySelectorAll('#feed .step').forEach((s)=>{
+      ScrollTrigger.create({
+        trigger:s, start:'top 80%',
+        onEnter:()=>s.classList.add('lit'), once:true
+      });
+    });
+  }
+
+  // counters
+  function animCount(el){
+    const dec = el.hasAttribute('data-dec') ? parseInt(el.getAttribute('data-dec')) : 0;
+    const tgt = parseFloat(el.getAttribute('data-count'));
+    if(REDUCED){ el.firstChild ? el.firstChild.nodeValue = tgt.toFixed(dec) : (el.textContent = tgt.toFixed(dec)); return; }
+    const obj = {v:0};
+    gsap.to(obj,{v:tgt,duration:1.4,ease:'power2.out',onUpdate:()=>{
+      // preserve trailing <span class="u"> markup if present by writing into first text node
+      const node = el.childNodes[0];
+      const txt = obj.v.toFixed(dec);
+      if(node && node.nodeType===3) node.nodeValue = txt;
+      else el.insertBefore(document.createTextNode(txt), el.firstChild);
+    }});
+  }
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>animCount(el)});
+  });
+})();
+
+/* SAFETY NET — never leave content hidden */
+setTimeout(()=>{
+  document.querySelectorAll('.reveal:not(.in)').forEach(e=>e.classList.add('in'));
+}, 2500);
+
+/* =====================================================
+   3. THREE.js — glowing low-poly "lumen core" + bloom
+   ===================================================== */
+(async function(){
+  const canvas = document.getElementById('core-canvas');
+  if(!canvas) return;
+  try{
+    const THREE = await import('three');
+    const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+    const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+    const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+
+    let W = canvas.clientWidth || 520, H = canvas.clientHeight || 520;
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 1.75));
+    renderer.setSize(W,H,false);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
+    camera.position.set(0,0,5.4);
+
+    const ACC = new THREE.Color('#4DFF88');
+
+    // low-poly icosahedron, faceted + emissive wireframe edges
+    const geo = new THREE.IcosahedronGeometry(1.5, 0);
+    const solid = new THREE.MeshStandardMaterial({
+      color:0x0E1A12, metalness:.2, roughness:.45,
+      emissive:ACC, emissiveIntensity:.18, flatShading:true,
+      transparent:true, opacity:.92
+    });
+    const core = new THREE.Mesh(geo, solid);
+    scene.add(core);
+
+    // glowing edges
+    const edges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({color:ACC, transparent:true, opacity:.9})
+    );
+    core.add(edges);
+
+    // inner bright point
+    const innerGeo = new THREE.IcosahedronGeometry(0.55, 0);
+    const inner = new THREE.Mesh(innerGeo, new THREE.MeshBasicMaterial({color:ACC}));
+    core.add(inner);
+
+    // orbiting wire ring
+    const ringMesh = new THREE.Mesh(new THREE.TorusGeometry(2.45,0.008,8,90), new THREE.MeshBasicMaterial({color:ACC,transparent:true,opacity:.3}));
+    ringMesh.rotation.x = Math.PI/2.3;
+    scene.add(ringMesh);
+
+    // lights
+    const key = new THREE.PointLight(0x4DFF88, 9, 30); key.position.set(3,3,4); scene.add(key);
+    const fill = new THREE.PointLight(0x6E8BFF, 3, 30); fill.position.set(-4,-2,2); scene.add(fill);
+    scene.add(new THREE.AmbientLight(0x223044, .6));
+
+    // bloom composer
+    const composer = new EffectComposer(renderer);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));
+    composer.setSize(W,H);
+    composer.addPass(new RenderPass(scene,camera));
+    const bloom = new UnrealBloomPass(new THREE.Vector2(W,H), 0.85, 0.55, 0.15);
+    composer.addPass(bloom);
+
+    // pointer parallax
+    let mx=0,my=0,tx=0,ty=0;
+    if(!REDUCED){
+      window.addEventListener('pointermove',(e)=>{
+        tx = (e.clientX/window.innerWidth - .5);
+        ty = (e.clientY/window.innerHeight - .5);
+      }, {passive:true});
+    }
+
+    function resize(){
+      W = canvas.clientWidth||W; H = canvas.clientHeight||H;
+      renderer.setSize(W,H,false); composer.setSize(W,H);
+      camera.aspect = W/H; camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+
+    let running = true;
+    document.addEventListener('visibilitychange',()=>{ running = !document.hidden; if(running) loop(); });
+
+    const clock = new THREE.Clock();
+    function loop(){
+      if(!running) return;
+      requestAnimationFrame(loop);
+      const t = clock.getElapsedTime();
+      const spin = REDUCED ? 0.0008 : 0.004;
+      core.rotation.y += spin; core.rotation.x += spin*0.4;
+      ringMesh.rotation.z = t*0.25;
+      if(!REDUCED){
+        mx += (tx-mx)*0.05; my += (ty-my)*0.05;
+        camera.position.x = mx*1.2; camera.position.y = -my*1.0;
+        camera.lookAt(0,0,0);
+        inner.scale.setScalar(1 + Math.sin(t*1.6)*0.08); // breathing pulse
+        solid.emissiveIntensity = 0.18 + Math.sin(t*1.6)*0.06;
+      }
+      composer.render();
+    }
+    loop();
+  }catch(err){
+    console.warn('lumen core: WebGL unavailable, using fallback', err);
+    document.body.classList.add('fallback');
+  }
+})();
+</script>
+</body>
+</html>

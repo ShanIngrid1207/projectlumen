@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quest Lumen — Compare Homepage Designs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Seven homepage design directions for Quest Lumen — a web design & development studio, including two scroll-into-the-screen 3D builds. Compare side by side.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A10;--bar:#0E1119;--panel:#11151F;--ink:#EAF0FA;--mute:#8893A6;
+    --line:rgba(191,227,255,.12);--line-2:rgba(191,227,255,.22);--accent:#BFE3FF;
+    --display:"Khand",sans-serif;--sans:"Hanken Grotesk",sans-serif;--mono:"Spline Sans Mono",monospace;
+    --ease:cubic-bezier(.16,.84,.3,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;min-height:100%;overflow:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* Toolbar */
+  .bar{flex:0 0 auto;background:var(--bar);display:flex;align-items:center;gap:1rem;
+    padding:.8rem 1.2rem;flex-wrap:wrap;z-index:10;border-bottom:1px solid var(--line)}
+  .bar__title{display:flex;align-items:center;gap:.7rem;margin-right:auto;min-width:0}
+  .bar__mk{width:30px;height:30px;border-radius:8px;border:1px solid var(--line-2);display:grid;place-items:center;flex:none}
+  .bar__mk span{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .bar__title b{font-family:var(--display);font-weight:600;font-size:1.28rem;letter-spacing:.01em;line-height:1}
+  .bar__title b i{font-style:normal;color:var(--mute)}
+  .bar__title small{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-top:3px}
+  .seg{display:inline-flex;background:#0A0D14;border:1px solid var(--line);border-radius:100px;padding:3px}
+  .seg button{font-family:var(--mono);font-size:.74rem;font-weight:500;padding:.5em 1.05em;border-radius:100px;color:var(--mute);transition:.25s var(--ease);letter-spacing:.04em}
+  .seg button.on{background:var(--accent);color:#06223A}
+  .toggle{display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:.74rem;color:var(--ink);letter-spacing:.03em}
+  .toggle input{accent-color:var(--accent);width:15px;height:15px}
+  .bar .hint{font-family:var(--mono);font-size:.66rem;color:var(--mute);letter-spacing:.04em}
+  @media(max-width:900px){.bar .hint{display:none}}
+
+  /* Stage — SVG dot grid, no gradient */
+  .stage{flex:1 1 auto;overflow:auto;padding:28px;scroll-behavior:smooth;background-color:var(--bg);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23151B27'/%3E%3C/svg%3E")}
+  .rail{display:flex;flex-direction:column;gap:clamp(34px,5vw,64px);align-items:center;width:fit-content;min-width:100%;margin-inline:auto}
+
+  .panel{flex:0 0 auto;display:flex;flex-direction:column;gap:12px;width:fit-content;max-width:100%}
+  .panel__head{display:flex;align-items:flex-end;justify-content:space-between;gap:.8rem}
+  .panel__label b{font-family:var(--display);font-weight:600;font-size:1.18rem;letter-spacing:.01em;display:block;line-height:1}
+  .panel__label .tag{font-family:var(--mono);font-size:.66rem;color:var(--mute);letter-spacing:.05em;display:block;margin-top:5px;max-width:38ch}
+  .panel__label .tag i{font-style:normal;color:var(--accent)}
+  .panel__open{display:inline-flex;align-items:center;gap:.4em;font-family:var(--mono);font-size:.72rem;font-weight:500;color:#06223A;
+    border-radius:100px;padding:.55em 1em;background:var(--accent);transition:.22s var(--ease);white-space:nowrap;letter-spacing:.03em}
+  .panel__open:hover{transform:translateY(-2px)}
+  .panel__open svg{width:.92em;height:.92em}
+
+  .device{background:#05070C;border-radius:30px;padding:10px;position:relative;border:1px solid var(--line-2);
+    box-shadow:0 30px 60px rgba(0,0,0,.5)}
+  .device::before{content:"";position:absolute;top:15px;left:50%;transform:translateX(-50%);width:44px;height:5px;
+    background:rgba(191,227,255,.18);border-radius:100px;z-index:3}
+  .device iframe{display:block;border:0;border-radius:22px;background:#06070A;width:390px;height:760px}
+
+  body.mode-desktop .device{border-radius:14px;padding:8px}
+  body.mode-desktop .device::before{display:none}
+  body.mode-desktop .device iframe{width:1180px;height:720px;border-radius:8px}
+
+  .stage::-webkit-scrollbar{height:12px;width:12px}
+  .stage::-webkit-scrollbar-track{background:transparent}
+  .stage::-webkit-scrollbar-thumb{background:rgba(191,227,255,.18);border-radius:100px;border:3px solid var(--bg)}
+  .stage::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+  @media(max-width:560px){
+    .bar{gap:.6rem;padding:.65rem .85rem}
+    .stage{padding:14px}
+    .rail{gap:16px}
+    .device iframe{width:86vw;max-width:390px;height:72vh}
+    body.mode-desktop .device iframe{width:86vw;height:72vh}
+  }
+</style>
+</head>
+<body class="mode-desktop">
+
+<div class="bar">
+  <div class="bar__title">
+    <span class="bar__mk"><span></span></span>
+    <div>
+      <b>Quest <i>Lumen</i> — Compare Designs</b>
+      <small>Web design &amp; development studio · 7 directions</small>
+    </div>
+  </div>
+
+  <div class="seg" role="group" aria-label="Preview width">
+    <button id="btn-mobile">Mobile</button>
+    <button id="btn-desktop" class="on">Desktop</button>
+  </div>
+
+  <label class="toggle"><input type="checkbox" id="sync"> Sync scroll</label>
+
+  <span class="hint">Each frame is live &amp; scrolls on its own · scroll down to see all seven · 06 &amp; 07 are 3D — scroll inside them to dive in · best on a GPU</span>
+</div>
+
+<div class="stage" id="stage">
+  <div class="rail">
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>01 · Pulse</b><span class="tag"><i>Dark</i> — a current of light (Three.js beam + bloom)</span></div>
+        <a class="panel__open" href="lumen-1-pulse.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="1" src="lumen-1-pulse.html" title="Pulse" loading="eager"></iframe></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>02 · Grid</b><span class="tag"><i>Dark</i> — interactive wireframe substrate (cursor-reactive)</span></div>
+        <a class="panel__open" href="lumen-2-grid.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="2" src="lumen-2-grid.html" title="Grid" loading="eager"></iframe></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>03 · Daylight</b><span class="tag"><i>Light</i> — editorial, kinetic type + matte 3D solids</span></div>
+        <a class="panel__open" href="lumen-3-daylight.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="3" src="lumen-3-daylight.html" title="Daylight" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>04 · Console</b><span class="tag"><i>Dark</i> — developer terminal, command palette + glowing core</span></div>
+        <a class="panel__open" href="lumen-4-console.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="4" src="lumen-4-console.html" title="Console" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>05 · Aurora</b><span class="tag"><i>Dark</i> — particle light-field that spells LUMEN, morphs on scroll</span></div>
+        <a class="panel__open" href="lumen-5-aurora.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="5" src="lumen-5-aurora.html" title="Aurora" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>06 · Studio Dive</b><span class="tag"><i>Light</i> — scroll into a real 3D desk; the monitor powers on into the site</span></div>
+        <a class="panel__open" href="lumen-desk.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="6" src="lumen-desk.html" title="Studio Dive" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__label"><b>07 · CRT Dive</b><span class="tag"><i>Dark</i> — scroll into a retro CRT; amber screen boots up into the site</span></div>
+        <a class="panel__open" href="lumen-crt.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </div>
+      <div class="device"><iframe class="frame" data-i="7" src="lumen-crt.html" title="CRT Dive" loading="lazy"></iframe></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var body=document.body;
+  var bm=document.getElementById('btn-mobile');
+  var bd=document.getElementById('btn-desktop');
+  var sync=document.getElementById('sync');
+  var frames=Array.prototype.slice.call(document.querySelectorAll('.frame'));
+
+  function setMode(mobile){
+    body.classList.toggle('mode-mobile',mobile);
+    body.classList.toggle('mode-desktop',!mobile);
+    bm.classList.toggle('on',mobile);
+    bd.classList.toggle('on',!mobile);
+  }
+  bm.addEventListener('click',function(){setMode(true);});
+  bd.addEventListener('click',function(){setMode(false);});
+
+  var locked=false;
+  function attach(){
+    frames.forEach(function(f){
+      var win;
+      try{ win=f.contentWindow; }catch(e){ return; }
+      try{
+        win.addEventListener('scroll',function(){
+          if(!sync.checked||locked) return;
+          locked=true;
+          var src=win.document.documentElement;
+          var max=Math.max(1,src.scrollHeight-win.innerHeight);
+          var ratio=win.scrollY/max;
+          frames.forEach(function(g){
+            if(g===f) return;
+            try{
+              var w=g.contentWindow,d=w.document.documentElement;
+              var m=Math.max(1,d.scrollHeight-w.innerHeight);
+              w.scrollTo(0,ratio*m);
+            }catch(e){}
+          });
+          requestAnimationFrame(function(){locked=false;});
+        },{passive:true});
+      }catch(e){}
+    });
+  }
+  var loaded=0;
+  frames.forEach(function(f){
+    f.addEventListener('load',function(){ loaded++; if(loaded===frames.length) attach(); });
+  });
+
+  sync.addEventListener('change',function(){
+    if(sync.checked){
+      try{
+        var w0=frames[0].contentWindow, d0=w0.document.documentElement;
+        var r=w0.scrollY/Math.max(1,d0.scrollHeight-w0.innerHeight);
+        frames.forEach(function(g){try{var w=g.contentWindow,d=w.document.documentElement;w.scrollTo(0,r*Math.max(1,d.scrollHeight-w.innerHeight));}catch(e){}});
+      }catch(e){}
+    }
+  });
+})();
+</script>
+</body></html>

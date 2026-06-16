@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest Lumen — Websites that carry light</title>
+<meta name="description" content="Quest Lumen is a remote web design and development studio. We design, build, and ship fast, luminous websites.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#06070A;
+    --ink-2:#0A0C12;
+    --ink-3:#0E1119;
+    --line:#1B202B;
+    --line-2:#262C3A;
+    --beam:#BFE3FF;        /* the single luminous accent */
+    --beam-deep:#7FB8E8;
+    --text:#E8ECF2;
+    --muted:#8893A6;
+    --muted-2:#5E6878;
+    --maxw:1240px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Hanken Grotesk',sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--beam);color:#04060B}
+
+  /* subtle vignette frame using solid inset shadow only (no gradients) */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:3;
+    box-shadow:inset 0 0 220px 40px rgba(0,0,0,.6);
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Khand',sans-serif;
+    font-weight:600;
+    line-height:.96;
+    letter-spacing:-0.01em;
+    text-transform:none;
+  }
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative;z-index:2}
+
+  /* ---- WebGL canvas ---- */
+  #beam-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+    pointer-events:none;
+  }
+  /* fallback decoration if WebGL fails: a solid drawn beam */
+  .nowebgl #beam-fallback{display:block}
+  #beam-fallback{
+    display:none;
+    position:fixed;
+    z-index:1;
+    top:0;left:0;right:0;bottom:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  #beam-fallback .streak{
+    position:absolute;
+    left:-10%;
+    top:38%;
+    width:120%;
+    height:2px;
+    background:var(--beam);
+    box-shadow:0 0 24px 6px rgba(191,227,255,.55), 0 0 80px 16px rgba(127,184,232,.35);
+    transform:rotate(-7deg);
+    filter:blur(.4px);
+  }
+
+  /* ---- NAV ---- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    transition:background .4s ease, border-color .4s ease, backdrop-filter .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(6,7,10,.72);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    height:74px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+  .brand .mark{
+    width:13px;height:13px;border-radius:50%;
+    background:var(--beam);
+    box-shadow:0 0 12px 2px rgba(191,227,255,.8), 0 0 28px 6px rgba(127,184,232,.45);
+    flex:none;
+  }
+  .brand .name{
+    font-family:'Khand',sans-serif;font-weight:600;font-size:23px;letter-spacing:.01em;
+  }
+  .brand .name b{color:var(--beam);font-weight:600}
+  .nav-links{display:flex;align-items:center;gap:34px}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:14.5px;font-weight:500;
+    letter-spacing:.01em;transition:color .25s;
+  }
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{
+    font-family:'Hanken Grotesk',sans-serif;
+    color:#04060B;background:var(--beam);
+    border:none;padding:11px 20px;border-radius:2px;
+    font-size:14.5px;font-weight:600;cursor:pointer;text-decoration:none;
+    transition:transform .12s ease, box-shadow .3s ease;
+    box-shadow:0 0 0 0 rgba(191,227,255,0);
+  }
+  .nav-cta:hover{box-shadow:0 0 22px 2px rgba(191,227,255,.55)}
+  .nav-cta:active{transform:scale(.96)}
+  .menu-btn{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer}
+  @media(max-width:760px){
+    .nav-links{display:none}
+    .menu-btn{display:block}
+  }
+
+  /* ---- HERO ---- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding-top:120px;padding-bottom:80px;
+  }
+  .hero .tag{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Spline Sans Mono',monospace;
+    font-size:12.5px;letter-spacing:.16em;color:var(--beam);
+    text-transform:uppercase;margin-bottom:30px;
+  }
+  .hero .tag .dot{width:6px;height:6px;border-radius:50%;background:var(--beam);box-shadow:0 0 10px 2px rgba(191,227,255,.8)}
+  .hero h1{
+    font-size:clamp(3.4rem,11vw,9.2rem);
+    font-weight:600;
+    max-width:14ch;
+    margin-bottom:34px;
+  }
+  .hero h1 .lit{
+    color:var(--beam);
+    text-shadow:0 0 26px rgba(191,227,255,.45), 0 0 70px rgba(127,184,232,.28);
+  }
+  .hero .lead{
+    font-size:clamp(1.05rem,1.7vw,1.32rem);
+    color:var(--muted);
+    max-width:50ch;
+    line-height:1.55;
+    margin-bottom:42px;
+  }
+  .hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .btn-primary{
+    font-family:'Hanken Grotesk',sans-serif;
+    background:var(--beam);color:#04060B;border:none;
+    padding:15px 30px;border-radius:2px;font-size:16px;font-weight:600;
+    cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+    transition:transform .12s ease, box-shadow .3s ease;
+  }
+  .btn-primary:hover{box-shadow:0 0 30px 3px rgba(191,227,255,.5)}
+  .btn-primary:active{transform:scale(.96)}
+  .btn-ghost{
+    font-family:'Hanken Grotesk',sans-serif;
+    background:transparent;color:var(--text);
+    border:1px solid var(--line-2);
+    padding:15px 28px;border-radius:2px;font-size:16px;font-weight:500;
+    cursor:pointer;text-decoration:none;transition:border-color .25s,color .25s;
+  }
+  .btn-ghost:hover{border-color:var(--beam);color:var(--beam)}
+  .btn-ghost:active{transform:scale(.96)}
+
+  .hero-meta{
+    display:flex;gap:46px;flex-wrap:wrap;
+    margin-top:74px;padding-top:30px;border-top:1px solid var(--line);
+    max-width:760px;
+  }
+  .hero-meta .m .n{font-family:'Khand',sans-serif;font-size:2.7rem;font-weight:600;color:var(--text);line-height:1}
+  .hero-meta .m .l{font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.02em}
+  .hero-meta .m .n em{color:var(--beam);font-style:normal}
+
+  .scroll-cue{
+    position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+    font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;
+    color:var(--muted-2);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .scroll-cue .bar{width:1px;height:38px;background:var(--line-2);position:relative;overflow:hidden}
+  .scroll-cue .bar::after{content:"";position:absolute;top:-40%;left:0;width:100%;height:40%;background:var(--beam);animation:drip 2.2s linear infinite}
+  @keyframes drip{to{top:100%}}
+
+  /* ---- SECTION SHELL ---- */
+  section{position:relative;z-index:2}
+  .band{padding:118px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:58px;flex-wrap:wrap}
+  .sec-head .idx{
+    font-family:'Spline Sans Mono',monospace;font-size:12.5px;color:var(--beam);
+    letter-spacing:.14em;display:block;margin-bottom:14px;
+  }
+  .sec-head h2{font-size:clamp(2.3rem,4.6vw,3.7rem);max-width:18ch}
+  .sec-head p{color:var(--muted);max-width:40ch;font-size:1.02rem}
+
+  /* ---- SERVICES (numbered ledger, not a card grid) ---- */
+  .services{border-top:1px solid var(--line)}
+  .srow{
+    display:grid;grid-template-columns:64px 1fr 1.3fr auto;gap:28px;align-items:center;
+    padding:30px 8px;border-bottom:1px solid var(--line);
+    transition:background .35s ease, padding-left .35s ease;
+    position:relative;
+  }
+  .srow::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--beam);
+    transform:scaleY(0);transform-origin:top;transition:transform .4s ease;
+    box-shadow:0 0 16px 2px rgba(191,227,255,.6);
+  }
+  .srow:hover{background:var(--ink-2);padding-left:22px}
+  .srow:hover::before{transform:scaleY(1)}
+  .srow .num{font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--muted-2)}
+  .srow:hover .num{color:var(--beam)}
+  .srow .title{font-family:'Khand',sans-serif;font-size:1.95rem;font-weight:600;line-height:1}
+  .srow .desc{color:var(--muted);font-size:1rem}
+  .srow .arrow{color:var(--muted-2);font-size:20px;transition:transform .3s,color .3s}
+  .srow:hover .arrow{color:var(--beam);transform:translate(4px,-4px)}
+  @media(max-width:820px){
+    .srow{grid-template-columns:42px 1fr;gap:6px 18px}
+    .srow .desc{grid-column:2;margin-top:6px}
+    .srow .arrow{display:none}
+  }
+
+  /* ---- WORK ---- */
+  .work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+  @media(max-width:820px){.work-grid{grid-template-columns:1fr}}
+  .work-card{
+    border:1px solid var(--line);background:var(--ink-2);border-radius:4px;overflow:hidden;
+    transition:border-color .35s, transform .35s;
+    display:flex;flex-direction:column;
+  }
+  .work-card:hover{border-color:var(--line-2);transform:translateY(-4px)}
+  .frame{
+    background:var(--ink-3);padding:14px 14px 0;position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  .frame .bar{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+  .frame .bar i{width:9px;height:9px;border-radius:50%;background:var(--line-2);display:block}
+  .frame .bar .url{
+    margin-left:10px;font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--muted-2);
+    background:var(--ink);padding:4px 12px;border-radius:3px;flex:1;
+  }
+  .screen{height:188px;position:relative;overflow:hidden;border-radius:4px 4px 0 0}
+  .work-meta{padding:22px 24px 26px}
+  .work-meta .cat{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--beam);text-transform:uppercase}
+  .work-meta h3{font-size:1.7rem;margin:8px 0 8px}
+  .work-meta p{color:var(--muted);font-size:.97rem;margin-bottom:16px}
+  .work-meta .tags{display:flex;gap:8px;flex-wrap:wrap}
+  .work-meta .tags span{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:2px}
+
+  /* ---- PROCESS ---- */
+  .process{background:var(--ink-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+  @media(max-width:900px){.steps{grid-template-columns:repeat(2,1fr);gap:1px}}
+  @media(max-width:540px){.steps{grid-template-columns:1fr}}
+  .step{padding:30px 26px 38px;border-left:1px solid var(--line);position:relative}
+  .step:first-child{border-left:none}
+  @media(max-width:900px){.step{border-left:none;border-top:1px solid var(--line)}}
+  .step .k{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--beam);letter-spacing:.1em}
+  .step .dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);margin:20px 0;position:relative}
+  .step:hover .dot{background:var(--beam);box-shadow:0 0 14px 3px rgba(191,227,255,.6)}
+  .step h3{font-size:1.6rem;margin-bottom:10px}
+  .step p{color:var(--muted);font-size:.95rem}
+
+  /* ---- CTA ---- */
+  .cta{padding:140px 0;text-align:center;position:relative}
+  .cta h2{font-size:clamp(2.6rem,6.4vw,5.4rem);max-width:16ch;margin:0 auto 26px}
+  .cta h2 .lit{color:var(--beam);text-shadow:0 0 30px rgba(191,227,255,.45)}
+  .cta p{color:var(--muted);max-width:46ch;margin:0 auto 38px;font-size:1.1rem}
+  .cta .mail{
+    display:inline-block;margin-top:30px;font-family:'Spline Sans Mono',monospace;
+    color:var(--muted);font-size:14px;letter-spacing:.04em;text-decoration:none;
+    border-bottom:1px solid var(--line-2);padding-bottom:3px;transition:color .25s,border-color .25s;
+  }
+  .cta .mail:hover{color:var(--beam);border-color:var(--beam)}
+
+  /* ---- FOOTER ---- */
+  footer{border-top:1px solid var(--line);padding:54px 0 40px;position:relative;z-index:2}
+  .foot{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+  .foot .brand .name{font-size:21px}
+  .foot .tagline{color:var(--muted);font-size:.95rem;max-width:30ch;margin-top:14px}
+  .foot-cols{display:flex;gap:64px;flex-wrap:wrap}
+  .foot-col h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase;margin-bottom:16px;font-weight:400}
+  .foot-col a{display:block;color:var(--muted);text-decoration:none;font-size:14.5px;margin-bottom:10px;transition:color .2s}
+  .foot-col a:hover{color:var(--beam)}
+  .foot-bottom{display:flex;justify-content:space-between;margin-top:54px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted-2);font-size:13px;flex-wrap:wrap;gap:12px}
+
+  /* ---- reveal ---- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1!important;transform:none!important;transition:none}
+    .scroll-cue .bar::after{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="beam-canvas"></canvas>
+<div id="beam-fallback" aria-hidden="true"><div class="streak"></div></div>
+
+<header id="hdr">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Quest Lumen home">
+      <span class="mark"></span>
+      <span class="name">Quest<b>·</b>Lumen</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="nav-cta" href="#contact">Start a project</a>
+    <button class="menu-btn" aria-label="Menu">≡</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="tag reveal"><span class="dot"></span>Web design &amp; development studio · worldwide</span>
+      <h1 class="reveal">A current of <span class="lit">light</span> runs through every site we ship.</h1>
+      <p class="lead reveal">Quest Lumen designs and builds websites that load in under a second and hold attention longer. Remote studio, measured craft, real launches.</p>
+      <div class="hero-actions reveal">
+        <a class="btn-primary" href="#contact">Start a project <span aria-hidden="true">→</span></a>
+        <a class="btn-ghost" href="#work">See the work</a>
+      </div>
+      <div class="hero-meta reveal">
+        <div class="m"><div class="n">60<em>+</em></div><div class="l">Sites shipped</div></div>
+        <div class="m"><div class="n">12</div><div class="l">Industries served</div></div>
+        <div class="m"><div class="n">&lt;1<em>s</em></div><div class="l">Load-time target</div></div>
+        <div class="m"><div class="n">4.9<em>/5</em></div><div class="l">Client rating</div></div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">Scroll<div class="bar"></div></div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="band services" id="services">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="idx">01 / Services</span>
+          <h2>Six disciplines, one beam of focus.</h2>
+        </div>
+        <p>Hire the whole studio or one capability. Each engagement is scoped, fixed, and shipped on a date you can hold us to.</p>
+      </div>
+
+      <div class="ledger">
+        <div class="srow reveal">
+          <span class="num">01</span>
+          <span class="title">Web Design</span>
+          <span class="desc">Interface and layout work grounded in your content, not a template.</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="srow reveal">
+          <span class="num">02</span>
+          <span class="title">Web Development</span>
+          <span class="desc">Hand-built front ends and headless back ends that stay fast under load.</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="srow reveal">
+          <span class="num">03</span>
+          <span class="title">Brand &amp; Identity</span>
+          <span class="desc">Naming, type, and a visual system that reads the same everywhere.</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="srow reveal">
+          <span class="num">04</span>
+          <span class="title">Motion &amp; Interaction</span>
+          <span class="desc">WebGL, scroll choreography, and micro-states that reward a click.</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="srow reveal">
+          <span class="num">05</span>
+          <span class="title">SEO &amp; Performance</span>
+          <span class="desc">Core Web Vitals, structured data, and the boring work that ranks.</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="srow reveal">
+          <span class="num">06</span>
+          <span class="title">Care &amp; Hosting</span>
+          <span class="desc">Monitoring, edge hosting, and monthly upkeep after the launch.</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="band" id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="idx">02 / Selected work</span>
+          <h2>Six builds, lit and launched.</h2>
+        </div>
+        <p>A slice of recent projects. Mockups shown; live links shared on request.</p>
+      </div>
+
+      <div class="work-grid">
+
+        <!-- card 1 -->
+        <article class="work-card reveal">
+          <div class="frame">
+            <div class="bar"><i></i><i></i><i></i><span class="url">halocoffee.co</span></div>
+            <div class="screen">
+              <svg viewBox="0 0 520 188" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Halo Coffee site mockup">
+                <rect width="520" height="188" fill="#0E1119"/>
+                <circle cx="392" cy="96" r="58" fill="none" stroke="#BFE3FF" stroke-width="2" opacity=".9"/>
+                <circle cx="392" cy="96" r="40" fill="none" stroke="#7FB8E8" stroke-width="1" opacity=".5"/>
+                <rect x="40" y="44" width="150" height="13" rx="2" fill="#E8ECF2"/>
+                <rect x="40" y="66" width="120" height="13" rx="2" fill="#E8ECF2"/>
+                <rect x="40" y="100" width="190" height="7" rx="2" fill="#5E6878"/>
+                <rect x="40" y="114" width="160" height="7" rx="2" fill="#5E6878"/>
+                <rect x="40" y="138" width="86" height="22" rx="2" fill="#BFE3FF"/>
+              </svg>
+            </div>
+          </div>
+          <div class="work-meta">
+            <span class="cat">E-commerce</span>
+            <h3>Halo Coffee Roasters</h3>
+            <p>A subscription storefront with a 0.7s first paint and a checkout that converts on mobile.</p>
+            <div class="tags"><span>Shopify Hydrogen</span><span>Brand</span><span>SEO</span></div>
+          </div>
+        </article>
+
+        <!-- card 2 -->
+        <article class="work-card reveal">
+          <div class="frame">
+            <div class="bar"><i></i><i></i><i></i><span class="url">northwind.health</span></div>
+            <div class="screen">
+              <svg viewBox="0 0 520 188" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Northwind Health site mockup">
+                <rect width="520" height="188" fill="#0E1119"/>
+                <rect x="0" y="0" width="200" height="188" fill="#0A0C12"/>
+                <rect x="32" y="40" width="130" height="11" rx="2" fill="#E8ECF2"/>
+                <rect x="32" y="60" width="100" height="11" rx="2" fill="#E8ECF2"/>
+                <rect x="32" y="96" width="140" height="6" rx="2" fill="#5E6878"/>
+                <rect x="32" y="108" width="110" height="6" rx="2" fill="#5E6878"/>
+                <polyline points="240,150 290,120 330,134 370,86 420,104 470,60" fill="none" stroke="#BFE3FF" stroke-width="2.5"/>
+                <circle cx="470" cy="60" r="4" fill="#BFE3FF"/>
+              </svg>
+            </div>
+          </div>
+          <div class="work-meta">
+            <span class="cat">Healthcare</span>
+            <h3>Northwind Patient Portal</h3>
+            <p>Accessible WCAG-AA dashboard that cut support tickets by a third in two quarters.</p>
+            <div class="tags"><span>React</span><span>A11y</span><span>Design system</span></div>
+          </div>
+        </article>
+
+        <!-- card 3 -->
+        <article class="work-card reveal">
+          <div class="frame">
+            <div class="bar"><i></i><i></i><i></i><span class="url">studio-orbit.com</span></div>
+            <div class="screen">
+              <svg viewBox="0 0 520 188" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Studio Orbit site mockup">
+                <rect width="520" height="188" fill="#0E1119"/>
+                <ellipse cx="260" cy="94" rx="150" ry="54" fill="none" stroke="#262C3A" stroke-width="1"/>
+                <ellipse cx="260" cy="94" rx="100" ry="34" fill="none" stroke="#262C3A" stroke-width="1"/>
+                <circle cx="260" cy="94" r="14" fill="#BFE3FF"/>
+                <circle cx="410" cy="94" r="6" fill="#7FB8E8"/>
+                <circle cx="160" cy="60" r="4" fill="#E8ECF2"/>
+                <rect x="40" y="150" width="120" height="9" rx="2" fill="#E8ECF2"/>
+              </svg>
+            </div>
+          </div>
+          <div class="work-meta">
+            <span class="cat">Portfolio</span>
+            <h3>Studio Orbit</h3>
+            <p>A motion-led folio for a 3D studio, built around a single WebGL hero that scrubs on scroll.</p>
+            <div class="tags"><span>Three.js</span><span>GSAP</span><span>Motion</span></div>
+          </div>
+        </article>
+
+        <!-- card 4 -->
+        <article class="work-card reveal">
+          <div class="frame">
+            <div class="bar"><i></i><i></i><i></i><span class="url">ledger-fin.app</span></div>
+            <div class="screen">
+              <svg viewBox="0 0 520 188" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ledger Fin site mockup">
+                <rect width="520" height="188" fill="#0E1119"/>
+                <rect x="40" y="40" width="200" height="14" rx="2" fill="#E8ECF2"/>
+                <rect x="40" y="64" width="150" height="9" rx="2" fill="#5E6878"/>
+                <rect x="300" y="44" width="180" height="100" rx="4" fill="#0A0C12" stroke="#262C3A"/>
+                <rect x="316" y="120" width="20" height="14" fill="#7FB8E8"/>
+                <rect x="344" y="104" width="20" height="30" fill="#7FB8E8"/>
+                <rect x="372" y="86" width="20" height="48" fill="#BFE3FF"/>
+                <rect x="400" y="70" width="20" height="64" fill="#BFE3FF"/>
+                <rect x="428" y="58" width="20" height="76" fill="#BFE3FF"/>
+              </svg>
+            </div>
+          </div>
+          <div class="work-meta">
+            <span class="cat">Fintech</span>
+            <h3>Ledger Finance</h3>
+            <p>A reporting app marketing site plus a live data dashboard, shipped in seven weeks.</p>
+            <div class="tags"><span>Next.js</span><span>Charts</span><span>Performance</span></div>
+          </div>
+        </article>
+
+        <!-- card 5 -->
+        <article class="work-card reveal">
+          <div class="frame">
+            <div class="bar"><i></i><i></i><i></i><span class="url">terra-build.co</span></div>
+            <div class="screen">
+              <svg viewBox="0 0 520 188" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Terra Build site mockup">
+                <rect width="520" height="188" fill="#0E1119"/>
+                <rect x="40" y="44" width="240" height="16" rx="2" fill="#E8ECF2"/>
+                <rect x="40" y="70" width="180" height="16" rx="2" fill="#E8ECF2"/>
+                <rect x="40" y="118" width="100" height="22" rx="2" fill="#BFE3FF"/>
+                <line x1="330" y1="30" x2="330" y2="160" stroke="#262C3A"/>
+                <rect x="360" y="60" width="120" height="80" rx="3" fill="none" stroke="#7FB8E8" stroke-width="1.5"/>
+                <line x1="360" y1="100" x2="480" y2="100" stroke="#262C3A"/>
+                <line x1="420" y1="60" x2="420" y2="140" stroke="#262C3A"/>
+              </svg>
+            </div>
+          </div>
+          <div class="work-meta">
+            <span class="cat">Construction</span>
+            <h3>Terra Build Group</h3>
+            <p>A project-portfolio site with filterable case studies and a quote request that books calls.</p>
+            <div class="tags"><span>Astro</span><span>CMS</span><span>SEO</span></div>
+          </div>
+        </article>
+
+        <!-- card 6 -->
+        <article class="work-card reveal">
+          <div class="frame">
+            <div class="bar"><i></i><i></i><i></i><span class="url">aria-music.fm</span></div>
+            <div class="screen">
+              <svg viewBox="0 0 520 188" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Aria Music site mockup">
+                <rect width="520" height="188" fill="#0E1119"/>
+                <g fill="#BFE3FF">
+                  <rect x="60" y="80" width="6" height="28" rx="3"/>
+                  <rect x="76" y="64" width="6" height="60" rx="3"/>
+                  <rect x="92" y="44" width="6" height="100" rx="3"/>
+                  <rect x="108" y="70" width="6" height="48" rx="3"/>
+                  <rect x="124" y="54" width="6" height="80" rx="3"/>
+                  <rect x="140" y="84" width="6" height="20" rx="3"/>
+                  <rect x="156" y="60" width="6" height="68" rx="3" fill="#7FB8E8"/>
+                  <rect x="172" y="74" width="6" height="40" rx="3" fill="#7FB8E8"/>
+                </g>
+                <rect x="300" y="48" width="160" height="12" rx="2" fill="#E8ECF2"/>
+                <rect x="300" y="70" width="120" height="8" rx="2" fill="#5E6878"/>
+                <rect x="300" y="120" width="90" height="20" rx="2" fill="#BFE3FF"/>
+              </svg>
+            </div>
+          </div>
+          <div class="work-meta">
+            <span class="cat">Media</span>
+            <h3>Aria Streaming</h3>
+            <p>A launch site for an indie audio app, with an animated waveform hero and press kit.</p>
+            <div class="tags"><span>SvelteKit</span><span>Motion</span><span>Brand</span></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="band process" id="process">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="idx">03 / Process</span>
+          <h2>Five steps from dark to lit.</h2>
+        </div>
+        <p>No mystery, no endless revisions. Every project moves through the same five stages on a shared timeline.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div class="k">01</div><div class="dot"></div><h3>Discover</h3><p>We map your goals, audience, and the one job the site has to do.</p></div>
+        <div class="step reveal"><div class="k">02</div><div class="dot"></div><h3>Design</h3><p>Type, layout, and motion drafted in the browser, not flat pictures.</p></div>
+        <div class="step reveal"><div class="k">03</div><div class="dot"></div><h3>Build</h3><p>Hand-coded, version-controlled, tested across real devices.</p></div>
+        <div class="step reveal"><div class="k">04</div><div class="dot"></div><h3>Launch</h3><p>Edge deploy, redirects, analytics, and a checklist you can read.</p></div>
+        <div class="step reveal"><div class="k">05</div><div class="dot"></div><h3>Care</h3><p>Monitoring and monthly upkeep so the site stays fast after day one.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="band cta" id="contact">
+    <div class="wrap">
+      <h2 class="reveal">Tell us what you want to <span class="lit">switch on</span>.</h2>
+      <p class="reveal">Send a few sentences about your project. You will hear back from a person, with a real plan, inside two working days.</p>
+      <div class="reveal" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap">
+        <a class="btn-primary" href="mailto:hello@questlumen.com?subject=Start%20a%20project">Start a project <span aria-hidden="true">→</span></a>
+        <a class="btn-ghost" href="#work">Review the work</a>
+      </div>
+      <br>
+      <a class="mail reveal" href="mailto:hello@questlumen.com">hello@questlumen.com</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="brand"><span class="mark"></span><span class="name">Quest<b>·</b>Lumen</span></div>
+        <p class="tagline">A remote web design and development studio. We design, build, and ship fast, luminous websites.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Studio</h4>
+          <a href="#work">Work</a>
+          <a href="#services">Services</a>
+          <a href="#process">Process</a>
+        </div>
+        <div class="foot-col">
+          <h4>Services</h4>
+          <a href="#services">Web Design</a>
+          <a href="#services">Development</a>
+          <a href="#services">SEO &amp; Performance</a>
+        </div>
+        <div class="foot-col">
+          <h4>Contact</h4>
+          <a href="mailto:hello@questlumen.com">hello@questlumen.com</a>
+          <a href="#contact">Start a project</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Quest Lumen. Built worldwide.</span>
+      <span>Designed and developed in the browser.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== importmap + libs ===== -->
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+  /* ---------- nav scrolled state ---------- */
+  const hdr=document.getElementById('hdr');
+  const onScroll=()=>{ hdr.classList.toggle('scrolled', window.scrollY>20); };
+  onScroll(); window.addEventListener('scroll',onScroll,{passive:true});
+
+  /* ---------- reveal: IntersectionObserver + safety net ---------- */
+  (function(){
+    const els=[...document.querySelectorAll('.reveal')];
+    const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(reduce){ els.forEach(e=>e.classList.add('in')); return; }
+    if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+    const io=new IntersectionObserver((ents)=>{
+      ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    },{threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+    els.forEach((e,i)=>{ e.style.transitionDelay=(Math.min(i,6)*60)+'ms'; io.observe(e); });
+    // SAFETY NET: never leave content hidden
+    setTimeout(()=>els.forEach(e=>e.classList.add('in')),2500);
+  })();
+</script>
+
+<!-- ===== WebGL beam ===== -->
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+try{
+  const canvas = document.getElementById('beam-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.75));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 200);
+  camera.position.set(0, 0, 16);
+
+  const ACCENT = new THREE.Color(0xBFE3FF);
+  const DEEP   = new THREE.Color(0x6FA8DC);
+
+  // ---- a single flowing current of light: TubeGeometry along a CatmullRom curve ----
+  const N = 14;
+  const basePts = [];
+  for(let i=0;i<N;i++){
+    const t = i/(N-1);
+    const x = (t-0.5)*46;
+    const y = Math.sin(t*Math.PI*2.2)*4.2 + Math.sin(t*Math.PI*5.0)*1.2;
+    const z = Math.cos(t*Math.PI*2.6)*5.5 - 2;
+    basePts.push(new THREE.Vector3(x,y,z));
+  }
+  const curve = new THREE.CatmullRomCurve3(basePts.map(p=>p.clone()), false, 'catmullrom', 0.5);
+
+  const tubeGeo = new THREE.TubeGeometry(curve, 600, 0.10, 12, false);
+  const coreMat = new THREE.MeshBasicMaterial({color:ACCENT, transparent:true, opacity:0.95, blending:THREE.AdditiveBlending});
+  const core = new THREE.Mesh(tubeGeo, coreMat);
+  scene.add(core);
+
+  // soft halo tube around the core for extra glow body
+  const haloGeo = new THREE.TubeGeometry(curve, 600, 0.34, 12, false);
+  const haloMat = new THREE.MeshBasicMaterial({color:DEEP, transparent:true, opacity:0.22, blending:THREE.AdditiveBlending});
+  const halo = new THREE.Mesh(haloGeo, haloMat);
+  scene.add(halo);
+
+  // travelling pulses: bright points that run ALONG the curve
+  const PULSES = 26;
+  const pGeo = new THREE.BufferGeometry();
+  const pPos = new Float32Array(PULSES*3);
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+  const pMat = new THREE.PointsMaterial({color:0xFFFFFF, size:0.34, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false});
+  const pulses = new THREE.Points(pGeo, pMat);
+  scene.add(pulses);
+  const pOffsets = new Array(PULSES).fill(0).map((_,i)=>i/PULSES);
+
+  // faint sparse star dust (solid points, no gradient)
+  const STARS=140;
+  const sGeo=new THREE.BufferGeometry();
+  const sPos=new Float32Array(STARS*3);
+  for(let i=0;i<STARS;i++){
+    sPos[i*3]=(Math.random()-0.5)*70;
+    sPos[i*3+1]=(Math.random()-0.5)*42;
+    sPos[i*3+2]=-12-Math.random()*22;
+  }
+  sGeo.setAttribute('position', new THREE.BufferAttribute(sPos,3));
+  const sMat=new THREE.PointsMaterial({color:0x8FB4D8, size:0.10, transparent:true, opacity:0.5});
+  scene.add(new THREE.Points(sGeo,sMat));
+
+  // ---- bloom ----
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.35, 0.55, 0.18);
+  composer.addPass(bloom);
+
+  // ---- scroll progress drives travel of the current ----
+  let scrollProg = 0;
+  if(window.gsap && window.ScrollTrigger){
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.create({
+      trigger:'body', start:'top top', end:'bottom bottom', scrub:1,
+      onUpdate:(self)=>{ scrollProg = self.progress; }
+    });
+  }
+
+  // pointer parallax
+  let px=0, py=0, tpx=0, tpy=0;
+  window.addEventListener('pointermove',(e)=>{
+    tpx=(e.clientX/window.innerWidth-0.5);
+    tpy=(e.clientY/window.innerHeight-0.5);
+  });
+
+  const clock = new THREE.Clock();
+  let raf;
+  function tick(){
+    raf = requestAnimationFrame(tick);
+    if(document.hidden) return;
+    const t = clock.getElapsedTime();
+    const speed = reduce ? 0 : 1;
+
+    // camera travels along X as you scroll -> the current appears to flow past
+    const travel = THREE.MathUtils.lerp(-13, 13, scrollProg);
+    camera.position.x += ((travel) - camera.position.x)*0.06;
+    px += (tpx-px)*0.05; py += (tpy-py)*0.05;
+    camera.position.y += ((-py*3) - camera.position.y)*0.06;
+    camera.position.z += ((16 - scrollProg*3) - camera.position.z)*0.05;
+    camera.lookAt(camera.position.x + px*6, 0, 0);
+
+    // gentle breathing of the whole current
+    core.rotation.z = Math.sin(t*0.15)*0.04*speed;
+    halo.rotation.z = core.rotation.z;
+    coreMat.opacity = 0.85 + Math.sin(t*1.4)*0.1*speed;
+
+    // run pulses along the curve, biased by scroll
+    for(let i=0;i<PULSES;i++){
+      let u = (pOffsets[i] + t*0.06*speed + scrollProg*0.6) % 1;
+      const v = curve.getPointAt(u);
+      pPos[i*3]=v.x; pPos[i*3+1]=v.y; pPos[i*3+2]=v.z;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    composer.render();
+  }
+  tick();
+
+  window.addEventListener('resize', ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  document.addEventListener('visibilitychange', ()=>{
+    if(!document.hidden){ clock.getDelta(); }
+  });
+
+}catch(err){
+  console.warn('WebGL beam unavailable:', err);
+  document.body.classList.add('nowebgl');
+}
+</script>
+
+</body>
+</html>
