@@ -63,7 +63,7 @@ function send(ws, method, params={}, sessionId){
     }catch{}
   }
   if(parseInt(SCROLL,10)>0){
-    await S('Runtime.evaluate',{expression:`window.scrollTo(0,${parseInt(SCROLL,10)})`});
+    await S('Runtime.evaluate',{expression:`document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,${parseInt(SCROLL,10)})`});
     await sleep(400);
   }
   await sleep(parseInt(extraWait,10));

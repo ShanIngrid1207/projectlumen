@@ -178,6 +178,8 @@
   .frame .bar i{width:9px;height:9px;border-radius:50%;background:var(--line-2);display:block}
   .frame .bar .url{margin-left:10px;font-family:'Geist Mono';font-size:11px;color:var(--muted);background:var(--card);padding:4px 12px;border-radius:3px;flex:1;border:1px solid var(--line)}
   .screen{height:184px;overflow:hidden;border-radius:4px 4px 0 0}
+  .screen img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,.84,.3,1)}
+  .work-card:hover .screen img{transform:scale(1.04)}
   .work-meta{padding:22px 24px 26px}
   .work-meta .cat{font-family:'Geist Mono';font-size:11px;letter-spacing:.12em;color:var(--beam);text-transform:uppercase}
   .work-meta h3{font-size:1.6rem;margin:8px 0}
@@ -391,18 +393,9 @@
     ["Construction","Terra Build Group","A project-portfolio site with filterable case studies and a quote request that books calls.",["Astro","CMS","SEO"]],
     ["Media","Aria Streaming","A launch site for an indie audio app, with an animated waveform hero and press kit.",["SvelteKit","Motion","Brand"]]
   ];
-  const C=["#1B45FF","#15171C","#EAE5DA","#6B6F79"];
   const shot=(i)=>{
-    const bg="#F4F1EA";
-    const arts=[
-      `<rect width="520" height="184" fill="${bg}"/><circle cx="392" cy="92" r="54" fill="none" stroke="${C[0]}" stroke-width="3"/><rect x="40" y="42" width="150" height="13" rx="2" fill="${C[1]}"/><rect x="40" y="64" width="120" height="13" rx="2" fill="${C[1]}"/><rect x="40" y="100" width="190" height="7" rx="2" fill="${C[3]}"/><rect x="40" y="114" width="160" height="7" rx="2" fill="${C[3]}"/><rect x="40" y="138" width="86" height="22" rx="2" fill="${C[0]}"/>`,
-      `<rect width="520" height="184" fill="${bg}"/><rect x="0" y="0" width="200" height="184" fill="#EAE5DA"/><rect x="32" y="40" width="130" height="11" rx="2" fill="${C[1]}"/><rect x="32" y="60" width="100" height="11" rx="2" fill="${C[1]}"/><polyline points="240,150 290,118 330,132 370,84 420,102 470,58" fill="none" stroke="${C[0]}" stroke-width="3"/><circle cx="470" cy="58" r="5" fill="${C[0]}"/>`,
-      `<rect width="520" height="184" fill="${bg}"/><ellipse cx="260" cy="92" rx="150" ry="52" fill="none" stroke="${C[3]}" stroke-width="1.5"/><ellipse cx="260" cy="92" rx="100" ry="32" fill="none" stroke="${C[3]}" stroke-width="1.5"/><circle cx="260" cy="92" r="14" fill="${C[0]}"/><circle cx="410" cy="92" r="6" fill="${C[1]}"/>`,
-      `<rect width="520" height="184" fill="${bg}"/><rect x="40" y="40" width="200" height="14" rx="2" fill="${C[1]}"/><rect x="300" y="44" width="180" height="100" rx="4" fill="#fff" stroke="${C[3]}"/><rect x="316" y="118" width="20" height="14" fill="${C[0]}"/><rect x="344" y="102" width="20" height="30" fill="${C[0]}"/><rect x="372" y="84" width="20" height="48" fill="${C[0]}"/><rect x="400" y="68" width="20" height="64" fill="${C[0]}"/><rect x="428" y="56" width="20" height="76" fill="${C[0]}"/>`,
-      `<rect width="520" height="184" fill="${bg}"/><rect x="40" y="44" width="240" height="16" rx="2" fill="${C[1]}"/><rect x="40" y="70" width="180" height="16" rx="2" fill="${C[1]}"/><rect x="40" y="116" width="100" height="22" rx="2" fill="${C[0]}"/><rect x="360" y="60" width="120" height="80" rx="3" fill="none" stroke="${C[0]}" stroke-width="2"/><line x1="360" y1="100" x2="480" y2="100" stroke="${C[3]}"/><line x1="420" y1="60" x2="420" y2="140" stroke="${C[3]}"/>`,
-      `<rect width="520" height="184" fill="${bg}"/><g fill="${C[0]}"><rect x="60" y="80" width="6" height="28" rx="3"/><rect x="76" y="62" width="6" height="60" rx="3"/><rect x="92" y="42" width="6" height="100" rx="3"/><rect x="108" y="70" width="6" height="48" rx="3"/><rect x="124" y="54" width="6" height="80" rx="3"/><rect x="140" y="84" width="6" height="20" rx="3"/></g><rect x="300" y="48" width="160" height="12" rx="2" fill="${C[1]}"/><rect x="300" y="120" width="90" height="20" rx="2" fill="${C[0]}"/>`
-    ];
-    return `<svg viewBox="0 0 520 184" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Site mockup">${arts[i]}</svg>`;
+    const imgs=["work-coffee","work-clinic","work-flatlay","work-fintech-chart","work-house-pool","work-studio-console"];
+    return `<img src="img/${imgs[i]}.jpg" alt="Site mockup" loading="lazy">`;
   };
   const urls=["halocoffee.co","northwind.health","studio-orbit.com","ledger-fin.app","terra-build.co","aria-music.fm"];
   const g=document.getElementById('workGrid');

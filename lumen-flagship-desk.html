@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest Lumen — Watch your site come alive</title>
+<meta name="description" content="Quest Lumen designs and builds fast, luminous websites. Grab the machine, spin it, watch a site come to life on the screen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports":{ "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" }}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<style>
+  :root{
+    --bg:#07080C; --bg-2:#0C0E15; --ink:#EEF2FA; --mute:#8A93A6;
+    --beam:#5BA8FF; --beam-2:#8FE3FF; --line:rgba(180,205,255,.12);
+    --display:"Khand",sans-serif; --sans:"Hanken Grotesk",sans-serif; --mono:"Spline Sans Mono",monospace;
+    --ease:cubic-bezier(.16,.84,.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* floating nav */
+  header{position:fixed;top:20px;left:0;right:0;z-index:40;display:flex;justify-content:center;padding:0 22px;pointer-events:none}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:36px;width:100%;max-width:1180px;pointer-events:auto}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:1.4rem;letter-spacing:.01em}
+  .brand .mk{width:11px;height:11px;border-radius:50%;background:var(--beam);box-shadow:0 0 14px var(--beam)}
+  .nav-right{display:flex;align-items:center;gap:30px}
+  .nav-right a{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--mute)}
+  .nav-right a:hover{color:var(--ink)}
+  @media(max-width:760px){.nav-right a.lnk{display:none}}
+
+  /* hero */
+  .hero{position:relative;min-height:100dvh;overflow:hidden;background:var(--bg)}
+  .hero-bg-vid{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .hero-bg-vid video{width:100%;height:100%;object-fit:cover;opacity:.22;filter:saturate(.7) brightness(.8)}
+  #scene{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:none}
+  /* flat vignette scrim (radial-less, two flat panels) — no gradients */
+  .scrim-l{position:absolute;left:0;top:0;bottom:0;width:60%;z-index:2;background:rgba(7,8,12,.55);pointer-events:none}
+  .scrim-base{position:absolute;inset:0;z-index:2;background:rgba(7,8,12,.18);pointer-events:none}
+
+  .hero-inner{position:relative;z-index:3;max-width:1180px;margin:0 auto;padding:0 32px;min-height:100dvh;
+    display:flex;flex-direction:column;justify-content:center;pointer-events:none}
+  .hero-inner > *{pointer-events:auto}
+  .kicker{display:inline-flex;align-items:center;gap:14px;font-family:var(--mono);font-size:.74rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:30px}
+  .kicker .rule{width:42px;height:1px;background:var(--beam)}
+  .hero h1{font-family:var(--display);font-weight:600;font-size:clamp(3.4rem,8vw,7.6rem);line-height:.9;letter-spacing:-.005em;
+    max-width:14ch;text-transform:uppercase}
+  .hero h1 .ln{display:block;overflow:hidden}
+  .hero h1 .w{display:inline-block;will-change:transform}
+  .hero h1 em{font-style:italic;color:var(--beam);font-family:var(--sans);font-weight:600;text-transform:none;letter-spacing:-.02em}
+  .hero .sub{font-size:clamp(1.08rem,1.5vw,1.34rem);line-height:1.5;color:var(--mute);max-width:42ch;margin:28px 0 38px}
+  .hero .sub b{color:var(--ink);font-weight:600}
+  .cta-row{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+  .magnetic{position:relative;display:inline-flex;align-items:center;gap:14px;background:var(--ink);color:var(--bg);
+    font-weight:600;font-size:1rem;padding:15px 16px 15px 28px;border-radius:100px;will-change:transform;transition:background .4s var(--ease),color .4s var(--ease)}
+  .magnetic:hover{background:var(--beam)}
+  .magnetic .ic{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.12);display:grid;place-items:center;font-size:1rem;
+    transition:transform .5s var(--ease)}
+  .magnetic:hover .ic{transform:translate(3px,-3px)}
+  .ghost{font-size:1rem;color:var(--ink);font-weight:500;border-bottom:1.5px solid var(--line);padding-bottom:3px;transition:border-color .3s}
+  .ghost:hover{border-color:var(--beam)}
+
+  /* drag hint chip near the model */
+  .drag-hint{position:absolute;right:6vw;bottom:13vh;z-index:3;display:flex;align-items:center;gap:11px;
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);
+    background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.18);
+    padding:11px 17px;border-radius:100px;opacity:0}
+  .drag-hint .ring{width:18px;height:18px;border:1.5px solid var(--beam);border-radius:50%;border-top-color:transparent;animation:spin 2.4s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media(max-width:880px){.drag-hint{display:none}.scrim-l{width:100%}}
+
+  /* bottom live stat strip */
+  .strip{position:absolute;left:0;right:0;bottom:0;z-index:3;border-top:1px solid var(--line);
+    background:rgba(7,8,12,.35);backdrop-filter:blur(10px)}
+  .strip .row{max-width:1180px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:repeat(4,1fr)}
+  .strip .s{padding:20px 22px;border-left:1px solid var(--line)}
+  .strip .s:first-child{border-left:none;padding-left:0}
+  .strip .s .n{font-family:var(--display);font-weight:600;font-size:clamp(1.7rem,2.4vw,2.4rem);line-height:1}
+  .strip .s .n em{font-style:normal;color:var(--beam)}
+  .strip .s .l{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-top:7px}
+  @media(max-width:880px){.strip{position:static;background:var(--bg-2)}.strip .row{grid-template-columns:repeat(2,1fr)}.strip .s{border-left:none;padding-left:0}}
+
+  /* loader */
+  .loader{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:var(--bg);transition:opacity .8s var(--ease)}
+  .loader.gone{opacity:0;pointer-events:none}
+  .loader .lbar{width:180px;height:2px;background:var(--line);overflow:hidden}
+  .loader .lfill{height:100%;width:0;background:var(--beam)}
+  .loader .lt{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+
+  /* no-webgl fallback */
+  body.nogl #scene,body.nogl .drag-hint{display:none}
+  body.nogl .hero{background:#0a0d15}
+  .nogl-poster{display:none}
+  body.nogl .nogl-poster{display:block;position:absolute;inset:0;z-index:1;opacity:.5}
+  body.nogl .nogl-poster img{width:100%;height:100%;object-fit:cover}
+
+  /* second section so the page isn't only a hero */
+  .band{position:relative;z-index:1;background:var(--bg-2);border-top:1px solid var(--line);padding:130px 32px}
+  .band .wrap{max-width:1180px;margin:0 auto}
+  .band h2{font-family:var(--display);font-weight:600;font-size:clamp(2.4rem,4.6vw,4rem);text-transform:uppercase;line-height:.95;max-width:18ch}
+  .band p{color:var(--mute);font-size:1.15rem;max-width:54ch;margin-top:22px}
+  .reveal{opacity:0;transform:translateY(30px)}
+</style>
+</head>
+<body>
+<header><nav class="nav">
+  <a class="brand" href="#"><span class="mk"></span>Quest&nbsp;Lumen</a>
+  <div class="nav-right">
+    <a class="lnk" href="#work">Work</a><a class="lnk" href="#studio">Studio</a>
+    <a class="ghost" href="#contact">Start a project</a>
+  </div>
+</nav></header>
+
+<section class="hero" id="top">
+  <div class="hero-bg-vid"><video id="bgvid" muted loop playsinline autoplay preload="auto"><source src="video/screen-50748.mp4" type="video/mp4"></video></div>
+  <canvas id="scene"></canvas>
+  <div class="nogl-poster"><img src="img/hero-workspace-dark.jpg" alt=""></div>
+  <div class="scrim-base"></div><div class="scrim-l"></div>
+
+  <video id="screenvid" muted loop playsinline autoplay preload="auto" crossorigin="anonymous" style="display:none">
+    <source src="video/screen-4830.mp4" type="video/mp4">
+  </video>
+
+  <div class="hero-inner">
+    <span class="kicker"><span class="rule"></span>Remote web design &amp; development</span>
+    <h1>
+      <span class="ln"><span class="w">Built</span> <span class="w">in</span> <span class="w">the</span></span>
+      <span class="ln"><span class="w">open.</span> <span class="w"><em>Live.</em></span></span>
+    </h1>
+    <p class="sub">We design and build fast, luminous websites — and you can watch one come to life right on the screen. <b>Grab the machine. Spin it.</b></p>
+    <div class="cta-row">
+      <a class="magnetic" id="magBtn" href="#contact">Start a project <span class="ic">↗</span></a>
+      <a class="ghost" href="#work">See the work</a>
+    </div>
+  </div>
+
+  <div class="drag-hint" id="dragHint"><span class="ring"></span>Drag to spin the studio</div>
+
+  <div class="strip">
+    <div class="row">
+      <div class="s"><div class="n"><em>60</em>+</div><div class="l">Sites shipped</div></div>
+      <div class="s"><div class="n">12</div><div class="l">Industries</div></div>
+      <div class="s"><div class="n">&lt;1s</div><div class="l">Load target</div></div>
+      <div class="s"><div class="n">4.9</div><div class="l">Client rating</div></div>
+    </div>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="lt" id="loadPct">Warming the studio</div>
+    <div class="lbar"><div class="lfill" id="loadFill"></div></div>
+  </div>
+</section>
+
+<section class="band" id="studio">
+  <div class="wrap">
+    <h2 class="reveal">A studio of measured craft — and a little showmanship.</h2>
+    <p class="reveal">Every site we ship is hand-built, version-controlled, and tested on real devices. The 3D above is the same engine we put to work for clients: WebGL, scroll choreography, and motion that rewards a click.</p>
+  </div>
+</section>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const loaderEl=document.getElementById('loader'),fillEl=document.getElementById('loadFill'),pctEl=document.getElementById('loadPct');
+let renderer,scene,camera,composer,bloom,controls,model,screenMesh,vt;
+let ready=false, qx=0, qy=0, px=0, py=0;
+
+function fail(e){console.warn('[flagship] 3D unavailable:',e);document.body.classList.add('nogl');loaderEl.classList.add('gone');revealCopy();window.__lumenReady=true;}
+
+try{
+  const canvas=document.getElementById('scene');
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,0.01,100);camera.position.set(1.4,1.1,5.2);
+  const pmrem=new THREE.PMREMGenerator(renderer);scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;if('environmentIntensity'in scene)scene.environmentIntensity=0.32;
+  scene.add(new THREE.AmbientLight(0xffffff,0.12));
+  scene.add(new THREE.HemisphereLight(0x9ec3ff,0x05070c,0.32));
+  const key=new THREE.DirectionalLight(0xcfe0ff,1.1);key.position.set(-4,6,5);scene.add(key);
+  const rim=new THREE.DirectionalLight(0x5ba8ff,0.7);rim.position.set(5,2,-3);scene.add(rim);
+  const glow=new THREE.PointLight(0x6fc0ff,3.0,18,2.0);glow.position.set(0.4,0.5,2.2);scene.add(glow);
+  composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.5,0.6,0.85);composer.addPass(bloom);
+
+  // video texture (a site being built, on the CRT screen)
+  const vid=document.getElementById('screenvid');
+  const bgv=document.getElementById('bgvid');
+  const tryplay=()=>{[vid,bgv].forEach(v=>{if(v){const p=v.play();if(p&&p.catch)p.catch(()=>{});}});};
+  tryplay(); vid.addEventListener('canplay',tryplay,{once:true});
+  vt=new THREE.VideoTexture(vid);vt.colorSpace=THREE.SRGBColorSpace;vt.flipY=false;vt.minFilter=THREE.LinearFilter;vt.magFilter=THREE.LinearFilter;
+
+  controls=new OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;controls.dampingFactor=.07;controls.enableZoom=false;controls.enablePan=false;
+  controls.autoRotate=false;controls.autoRotateSpeed=0.32;controls.minPolarAngle=Math.PI*0.18;controls.maxPolarAngle=Math.PI*0.62;
+  controls.target.set(0,0.05,0);
+  let dragging=false;
+  controls.addEventListener('start',()=>{dragging=true;controls.autoRotate=false;});
+  controls.addEventListener('end',()=>{dragging=false;});
+
+  new GLTFLoader().load('computer_desk/scene.gltf',(g)=>{
+    model=g.scene;
+    let box=new THREE.Box3().setFromObject(model);const size=box.getSize(new THREE.Vector3()),ctr=box.getCenter(new THREE.Vector3());
+    model.scale.setScalar(6.0/Math.max(size.x,size.y,size.z));
+    box=new THREE.Box3().setFromObject(model);box.getCenter(ctr);model.position.sub(ctr);
+    scene.add(model);model.updateWorldMatrix(true,true);
+
+    // find the monitor screen mesh
+    model.traverse(o=>{if(o.isMesh&&o.name.toLowerCase().includes('monitor')&&!screenMesh)screenMesh=o;});
+    if(!screenMesh)model.traverse(o=>{if(o.isMesh&&/screen|display/i.test(o.name)&&!screenMesh)screenMesh=o;});
+    if(!screenMesh)model.traverse(o=>{if(o.isMesh&&o.material&&o.material.emissiveMap&&!screenMesh)screenMesh=o;});
+
+    const screenCenter=new THREE.Vector3();let scrH=1;
+    const normal=new THREE.Vector3(-0.30,0.26,1.0).normalize();
+    if(screenMesh){
+      const sb=new THREE.Box3().setFromObject(screenMesh);sb.getCenter(screenCenter);
+      const ss=sb.getSize(new THREE.Vector3()),dims=[ss.x,ss.y,ss.z].sort((a,b)=>b-a);scrH=dims[1];
+      const mat=screenMesh.material;
+      mat.map=vt;mat.emissive=new THREE.Color(0xffffff);mat.emissiveMap=vt;mat.emissiveIntensity=0.95;
+      mat.toneMapped=true;mat.needsUpdate=true;
+    }else{screenCenter.copy(ctr);scrH=size.y*0.3;}
+
+    // frame the monitor; nudge it right-of-centre so the headline owns the left
+    const up=new THREE.Vector3(0,1,0);
+    const right=new THREE.Vector3().crossVectors(up,normal).normalize();
+    const offset=right.clone().multiplyScalar(-scrH*1.0);
+    controls.target.copy(screenCenter).add(offset);
+    camera.position.copy(screenCenter).add(offset).addScaledVector(normal,scrH*3.4).addScaledVector(up,scrH*0.5);
+
+    ready=true;loaderEl.classList.add('gone');revealCopy();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__lumenReady=true;}));
+  },(ev)=>{const p=ev.lengthComputable?Math.round(ev.loaded/ev.total*100):Math.min(95,Math.round(ev.loaded/40000000*100));fillEl.style.width=p+'%';},(e)=>fail(e));
+
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);});
+  addEventListener('pointermove',e=>{qx=(e.clientX/innerWidth-0.5);qy=(e.clientY/innerHeight-0.5);});
+
+  function tick(){requestAnimationFrame(tick);if(document.hidden||!ready)return;
+    px+=(qx-px)*.04;py+=(qy-py)*.04;
+    if(model){model.rotation.x=py*0.08;}            // subtle parallax tilt
+    controls.update();composer.render();
+  }
+  tick();
+}catch(e){fail(e);}
+
+/* ---- copy choreography: anime.js headline + GSAP entrances + magnetic button ---- */
+let copyDone=false;
+function revealCopy(){
+  if(copyDone)return;copyDone=true;
+  if(reduce||!window.anime){document.querySelectorAll('.hero .w').forEach(w=>w.style.transform='none');gsapEntrances();return;}
+  anime.timeline({easing:'cubicBezier(.16,.84,.3,1)'})
+    .add({targets:'.hero h1 .w',translateY:['110%',0],duration:1000,delay:anime.stagger(70)},200);
+  gsapEntrances();
+}
+function gsapEntrances(){
+  if(!window.gsap)return;
+  gsap.set('.hero .w',{} );
+  gsap.from('.kicker',{opacity:0,y:18,duration:.8,delay:.15,ease:'power3.out'});
+  gsap.from('.hero .sub',{opacity:0,y:22,duration:.9,delay:.7,ease:'power3.out'});
+  gsap.from('.cta-row',{opacity:0,y:22,duration:.9,delay:.9,ease:'power3.out'});
+  gsap.from('.strip .s',{opacity:0,y:24,duration:.8,delay:1.0,stagger:.08,ease:'power3.out'});
+  gsap.to('#dragHint',{opacity:1,duration:.7,delay:1.6,ease:'power2.out'});
+  if(window.ScrollTrigger){gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray('.reveal').forEach(el=>gsap.to(el,{opacity:1,y:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}}));
+  }
+}
+// magnetic button
+(function(){
+  const b=document.getElementById('magBtn');if(!b||!window.gsap)return;const strength=.4;
+  b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();gsap.to(b,{x:(e.clientX-r.left-r.width/2)*strength,y:(e.clientY-r.top-r.height/2)*strength,duration:.5,ease:'power3.out'});});
+  b.addEventListener('pointerleave',()=>gsap.to(b,{x:0,y:0,duration:.6,ease:'elastic.out(1,.4)'}));
+})();
+// fallback: never hang the loader
+setTimeout(()=>{if(!window.__lumenReady){loaderEl.classList.add('gone');revealCopy();window.__lumenReady=true;}},9000);
+</script>
+</body>
+</html>

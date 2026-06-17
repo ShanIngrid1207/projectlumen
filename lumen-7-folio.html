@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest Lumen — Folio | Studio portfolio</title>
+<meta name="description" content="Quest Lumen — a remote web design & development studio. Selected work, stacked and lit. Fast, luminous websites built worldwide.">
+<!-- Suraj-adapted: fixed hero, stacked sticky cards, blend-difference cursor, chamfered corners, giant SVG footer name. No gradients (house rule); single red dot accent. -->
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&f[]=switzer@400,500,600&f[]=space-mono@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;
+  --bg-2:#0B0B0C;
+  --card:#101012;
+  --card-2:#16161A;
+  --line:rgba(255,255,255,.12);
+  --line-2:rgba(255,255,255,.22);
+  --white:#F2F2F0;
+  --mut:#8A8A8E;
+  --mut-2:#5A5A5E;
+  --red:#FF3B2F;            /* the single accent — used only as a dot/marker */
+  --maxw:1440px;
+  --disp:'Cabinet Grotesk',sans-serif;
+  --body:'Switzer',sans-serif;
+  --mono:'Space Mono',monospace;
+  --eo:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:var(--body);background:var(--bg);color:var(--white);font-size:17px;line-height:1.55;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+::selection{background:var(--white);color:var(--bg)}
+h1,h2,h3{font-family:var(--disp);font-weight:800;line-height:.98;letter-spacing:-.02em;text-transform:uppercase}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.dot-r{display:inline-block;width:.34em;height:.34em;background:var(--red);border-radius:50%;vertical-align:baseline;margin-left:.12em}
+.mono{font-family:var(--mono)}
+.badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:8px 16px}
+.badge svg{width:13px;height:13px;stroke:var(--mut);fill:none;stroke-width:1.6}
+
+/* custom cursor (blend-difference) */
+.cursor{position:fixed;top:0;left:0;width:14px;height:14px;border-radius:50%;background:#fff;pointer-events:none;z-index:9999;mix-blend-mode:difference;transform:translate(-50%,-50%);transition:width .25s var(--eo),height .25s var(--eo);will-change:transform}
+.cursor.big{width:54px;height:54px}
+@media(hover:none),(pointer:coarse){.cursor{display:none}}
+@media(prefers-reduced-motion:reduce){.cursor{display:none}}
+
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--body);font-weight:600;font-size:14px;padding:13px 22px;border-radius:999px;transition:transform .14s var(--eo),background .3s,color .3s,border-color .3s}
+.btn-solid{background:var(--white);color:var(--bg);border:1px solid var(--white)}
+.btn-solid:hover{background:#d9d9d6}
+.btn-out{border:1px solid var(--line-2);color:var(--white)}
+.btn-out:hover{border-color:var(--white)}
+.btn .ar{transition:transform .25s var(--eo)}
+.btn:hover .ar{transform:translate(3px,-3px)}
+.btn:active{transform:scale(.97)}
+
+/* nav (transparent over fixed hero) */
+header{position:fixed;top:0;left:0;right:0;z-index:90}
+.nav{display:flex;align-items:center;justify-content:space-between;height:78px;max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.logo{font-family:var(--disp);font-weight:900;font-size:21px;letter-spacing:.02em;text-transform:uppercase}
+.nav-links{display:flex;gap:34px}
+.nav-links a{font-size:14px;color:var(--white);opacity:.8;transition:opacity .25s}
+.nav-links a:hover{opacity:1}
+@media(max-width:860px){.nav-links{display:none}}
+
+/* ===== FIXED HERO (content slides over it) ===== */
+.hero{position:fixed;inset:0;z-index:0;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover}
+.hero .scrim{position:absolute;inset:0;background:rgba(5,5,5,.5)}
+.hero .scrim-b{position:absolute;inset:0;box-shadow:inset 0 -160px 120px -40px rgba(5,5,5,.95)}
+.hero-content{position:absolute;inset:0;max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,4vw,56px);display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(40px,7vh,80px)}
+.hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+.hero h1{font-size:clamp(30px,4.3vw,42px);font-weight:800;max-width:18ch;line-height:1.06}
+.hero .sub{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:22px}
+.spacer{height:100vh}                 /* lets content scroll up over the fixed hero */
+
+/* sheet of content that rides over the hero */
+.sheet{position:relative;z-index:10;background:var(--bg);margin-top:0}
+.band{padding:clamp(70px,9vw,140px) 0}
+
+/* stats / best work */
+.best{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+@media(max-width:860px){.best{grid-template-columns:1fr;gap:36px}}
+.best h2{font-size:clamp(46px,8vw,104px);font-weight:900;line-height:.9;margin:22px 0 28px}
+.best .sub{color:var(--mut);max-width:34ch;margin-bottom:28px;text-transform:none;font-family:var(--body)}
+.stat-cards{display:flex;gap:18px;flex-wrap:wrap}
+.chamfer{background:var(--card);border:1px solid var(--line);clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%)}
+.stat{flex:1;min-width:150px;padding:34px 30px}
+.stat .n{font-family:var(--disp);font-weight:800;font-size:clamp(40px,6vw,68px);line-height:.9}
+.stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-top:14px}
+
+/* ===== STACKED PROJECT CARDS (Suraj §4) ===== */
+.stack{position:relative}
+.proj{position:sticky;top:60px;height:clamp(440px,82vh,720px);border-radius:22px;overflow:hidden;border:1px solid var(--line);margin-bottom:26px}
+.proj img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.proj .ov{position:absolute;inset:0;background:rgba(5,5,5,.34)}
+.proj .ov-b{position:absolute;inset:0;box-shadow:inset 0 -150px 100px -40px rgba(5,5,5,.9)}
+.proj .tags{position:absolute;top:26px;left:26px;display:flex;gap:10px;flex-wrap:wrap}
+.proj .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);background:rgba(0,0,0,.4);border:1px solid var(--line-2);border-radius:999px;padding:7px 13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.proj .name{position:absolute;left:26px;bottom:26px;display:flex;align-items:center;gap:14px;background:rgba(8,8,8,.62);border:1px solid var(--line);border-radius:12px;padding:14px 20px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.proj .name .num{font-family:var(--mono);font-size:12px;color:var(--red)}
+.proj .name h3{font-size:clamp(20px,2.4vw,32px);font-weight:800}
+.proj .name .meta{font-family:var(--mono);font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+
+/* about / who we are */
+.about{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(28px,4vw,64px);align-items:center}
+@media(max-width:860px){.about{grid-template-columns:1fr;gap:32px}}
+.about .portrait{border-radius:18px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/5}
+.about .portrait img{width:100%;height:100%;object-fit:cover}
+.about h2{font-size:clamp(40px,6vw,80px);font-weight:900;line-height:.92;margin:20px 0 26px}
+.about p{color:var(--mut);font-size:clamp(16px,1.4vw,19px);max-width:50ch;text-transform:none;font-family:var(--body)}
+.pills{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0}
+.pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line-2);border-radius:999px;padding:11px 18px;font-size:13.5px;transition:border-color .25s,background .25s}
+.pill:hover{border-color:var(--white);background:rgba(255,255,255,.04)}
+.pill svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6}
+
+/* trusted brands grid */
+.brands-head{margin-bottom:44px}
+.brands-head h2{font-size:clamp(26px,3.4vw,36px);font-weight:800;max-width:20ch}
+.brands-head p{color:var(--mut);margin-top:14px;text-transform:none;font-family:var(--body);max-width:46ch}
+.brands{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(max-width:900px){.brands{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.brands{grid-template-columns:repeat(2,1fr)}}
+.brand-box{background:var(--bg);aspect-ratio:3/2;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:clamp(14px,1.5vw,19px);letter-spacing:.02em;color:#c7c7c4;transition:background .3s,color .3s}
+.brand-box:hover{background:var(--card);color:#fff}
+
+/* FAQ */
+.faq{display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(34px,5vw,80px);align-items:start}
+@media(max-width:860px){.faq{grid-template-columns:1fr;gap:30px}}
+.faq-left h2{font-size:clamp(34px,4.6vw,58px);font-weight:900;line-height:1;margin:20px 0 28px}
+.acc-item{border:1px solid var(--line);background:var(--card);margin-bottom:12px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.acc-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 24px;text-align:left;font-family:var(--body);font-weight:600;font-size:16.5px}
+.acc-q .ic{font-family:var(--mono);font-size:22px;color:var(--mut);transition:transform .3s var(--eo)}
+.acc-item.open .acc-q .ic{transform:rotate(45deg);color:var(--red)}
+.acc-a{max-height:0;overflow:hidden;transition:max-height .4s var(--eo)}
+.acc-a p{padding:0 24px 24px;color:var(--mut);font-size:15px}
+
+/* footer with giant SVG wordmark */
+footer{position:relative;z-index:10;background:var(--bg);border-top:1px solid var(--line);padding-top:54px;overflow:hidden}
+.foot-top{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding-bottom:44px}
+.foot-soc{display:flex;gap:12px}
+.foot-soc a{width:46px;height:46px;border:1px solid var(--line-2);border-radius:10px;display:grid;place-items:center;transition:border-color .25s,background .25s}
+.foot-soc a:hover{border-color:var(--white);background:rgba(255,255,255,.05)}
+.foot-soc svg{width:18px;height:18px;stroke:var(--white);fill:none;stroke-width:1.6}
+.foot-links{display:flex;gap:28px}
+.foot-links a{font-size:14px;color:var(--mut);transition:color .25s}
+.foot-links a:hover{color:var(--white)}
+.bigname{width:100%;display:block;padding:0 4px}
+.bigname svg{width:100%;height:auto;display:block}
+.bigname text{font-family:var(--disp);font-weight:900;fill:var(--white);letter-spacing:-.01em}
+.foot-base{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--mut-2);padding:22px 0 30px;flex-wrap:wrap;gap:8px;letter-spacing:.06em}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--eo),transform .9s var(--eo)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<header><div class="nav">
+  <a class="logo" href="#top">Quest Lumen</a>
+  <nav class="nav-links">
+    <a href="#top">Home</a><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a>
+  </nav>
+  <a class="btn btn-out" href="#contact">Book a call <span class="ar">↗</span></a>
+</div></header>
+
+<!-- FIXED HERO -->
+<section class="hero" id="top" aria-label="Intro">
+  <img src="img/hero-arch-mono.jpg" alt="High-contrast architectural lines">
+  <div class="scrim"></div><div class="scrim-b"></div>
+  <div class="hero-content">
+    <div class="hero-row">
+      <div>
+        <p class="sub">Remote web studio · est. 2024</p>
+        <h1>A remote studio building fast, luminous websites for brands that care about every pixel<span class="dot-r"></span></h1>
+      </div>
+      <a class="btn btn-solid" href="#contact">Start a project <span class="ar">↗</span></a>
+    </div>
+  </div>
+</section>
+<div class="spacer" aria-hidden="true"></div>
+
+<!-- SHEET rides over the fixed hero -->
+<div class="sheet">
+
+  <!-- BEST WORK / STATS -->
+  <section class="band"><div class="wrap best">
+    <div class="rv">
+      <span class="badge">Selected work</span>
+      <h2>Our best<br>work<span class="dot-r"></span></h2>
+      <p class="sub">Sixty-plus launches across twelve industries — each one scoped, fixed, and shipped on a date we held to.</p>
+      <a class="btn btn-out" href="#work">Check all projects <span class="ar">→</span></a>
+    </div>
+    <div class="stat-cards rv">
+      <div class="stat chamfer"><div class="n">60+</div><div class="l">Sites shipped</div></div>
+      <div class="stat chamfer"><div class="n">12</div><div class="l">Industries</div></div>
+    </div>
+  </div></section>
+
+  <!-- STACKED PROJECT CARDS -->
+  <section class="band" id="work" style="padding-top:0"><div class="wrap">
+    <div class="stack" id="stack"></div>
+  </div></section>
+
+  <!-- ABOUT -->
+  <section class="band" id="about"><div class="wrap">
+    <span class="badge rv" style="margin-bottom:30px"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>About the studio</span>
+    <div class="about">
+      <div class="portrait rv"><img src="img/work-person-laptop.jpg" alt="A studio designer working at a laptop" loading="lazy"></div>
+      <div class="rv">
+        <h2>Who we are<span class="dot-r"></span></h2>
+        <p>With launches across more than a dozen industries, Quest Lumen specialises in building scalable design systems and crafting responsive web experiences. We've worked with teams from early-stage startups to established brands — designing and developing in the browser, shipping under a second, and staying on after launch.</p>
+        <div class="pills">
+          <a class="pill" href="mailto:hello@questlumen.com"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>Email</a>
+          <a class="pill" href="#work"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Work</a>
+          <a class="pill" href="#process"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Process</a>
+          <a class="pill" href="#contact"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Twitter</a>
+        </div>
+        <a class="btn btn-out" href="#contact">Know more <span class="ar">↗</span></a>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- TRUSTED BRANDS -->
+  <section class="band"><div class="wrap">
+    <div class="brands-head rv">
+      <h2>Trusted by brands we've partnered with</h2>
+      <p>From specialty coffee to fintech, healthcare, and media — a few of the names we've designed and shipped for.</p>
+    </div>
+    <div class="brands rv" id="brands"></div>
+  </div></section>
+
+  <!-- FAQ -->
+  <section class="band" id="process"><div class="wrap faq">
+    <div class="faq-left rv">
+      <span class="badge"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 17h.01"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/></svg>FAQ's</span>
+      <h2>Have a project in mind? Let's make it real.</h2>
+      <a class="btn btn-out" href="#contact">Book a call <span class="ar">↗</span></a>
+    </div>
+    <div class="faq-right rv" id="faq"></div>
+  </div></section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="sheet" id="contact"><div class="wrap">
+  <div class="foot-top">
+    <div class="foot-soc">
+      <a href="mailto:hello@questlumen.com" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg></a>
+      <a href="#work" aria-label="Work"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg></a>
+      <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></a>
+    </div>
+    <nav class="foot-links"><a href="#top">Home</a><a href="#work">Work</a><a href="#about">About</a></nav>
+    <a class="btn btn-solid" href="mailto:hello@questlumen.com?subject=Book%20a%20call">Book a call <span class="ar">↗</span></a>
+  </div>
+  <div class="bigname" aria-hidden="true">
+    <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet">
+      <text x="500" y="120" text-anchor="middle" font-size="150">QUEST LUMEN</text>
+    </svg>
+  </div>
+  <div class="foot-base"><span>© 2026 Quest Lumen — built worldwide</span><span>hello@questlumen.com</span></div>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* stacked project cards */
+  const P=[
+    ["E-commerce / Coffee","Halo Coffee Roasters","Shopify · Brand · SEO","work-coffee"],
+    ["Fintech","Ledger Finance","Next.js · Charts · Performance","work-fintech-dark"],
+    ["Architecture","Terra Build Group","Astro · CMS · SEO","work-house-pool"],
+    ["Media / Audio","Aria Streaming","Svelte · Motion · Brand","work-studio-console"]
+  ];
+  const stack=document.getElementById('stack');
+  P.forEach((p,i)=>{const d=document.createElement('article');d.className='proj';
+    d.style.top=(60+i*16)+'px';
+    d.innerHTML=`<img src="img/${p[3]}.jpg" alt="${p[1]}" loading="lazy"><div class="ov"></div><div class="ov-b"></div>
+      <div class="tags"><span class="tag">${p[0]}</span><span class="tag">2025</span></div>
+      <div class="name"><span class="num">0${i+1}</span><div><h3>${p[1]}</h3><div class="meta">${p[2]}</div></div></div>`;
+    stack.appendChild(d);});
+
+  /* trusted brands */
+  const B=["Halo","Northwind","Orbit","Ledger","Terra","Aria","Vela","Cinder","Marlow","Pico","Numa","Dune"];
+  const br=document.getElementById('brands');
+  B.forEach(n=>{const x=document.createElement('div');x.className='brand-box';x.textContent=n;br.appendChild(x);});
+
+  /* faq */
+  const F=[
+    ["How long does a typical site take?","Most marketing sites ship in four to six weeks. We agree the date in week one and hold to it."],
+    ["What does it cost?","Engagements are fixed-fee and scoped up front — no hourly surprises. We quote after a short discovery call."],
+    ["Do you design and develop?","Both. Design and build happen in the browser, by the same small team, so nothing is lost in handoff."],
+    ["Will my site be fast?","Yes — sub-second loads are the target, with Core Web Vitals tracked before and after launch."],
+    ["Do you stay on after launch?","Care & Hosting covers monitoring, edge hosting, and monthly upkeep so the site stays fast."],
+    ["Can you work with my existing brand?","Absolutely. We can extend your current identity or build a new one from naming up."]
+  ];
+  const faq=document.getElementById('faq');
+  F.forEach((f,i)=>{const it=document.createElement('div');it.className='acc-item'+(i===0?' open':'');
+    it.innerHTML=`<button class="acc-q" aria-expanded="${i===0}">${f[0]}<span class="ic">+</span></button><div class="acc-a"><p>${f[1]}</p></div>`;
+    faq.appendChild(it);
+    const a=it.querySelector('.acc-a');if(i===0)a.style.maxHeight=a.scrollHeight+'px';
+    it.querySelector('.acc-q').addEventListener('click',()=>{
+      const open=it.classList.contains('open');
+      faq.querySelectorAll('.acc-item').forEach(o=>{o.classList.remove('open');o.querySelector('.acc-a').style.maxHeight=null;o.querySelector('.acc-q').setAttribute('aria-expanded','false');});
+      if(!open){it.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';it.querySelector('.acc-q').setAttribute('aria-expanded','true');}
+    });
+  });
+
+  /* blend-difference cursor */
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    const cur=document.getElementById('cursor');let x=innerWidth/2,y=innerHeight/2,cx=x,cy=y;
+    addEventListener('mousemove',e=>{x=e.clientX;y=e.clientY;},{passive:true});
+    (function loop(){cx+=(x-cx)*.2;cy+=(y-cy)*.2;cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`;requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,button,.proj,.brand-box,.pill').forEach(el=>{
+      el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+      el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+    });
+  }
+
+  /* reveals */
+  gsap.registerPlugin(ScrollTrigger);
+  if(reduce){document.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));}
+  else{gsap.utils.toArray('.rv').forEach(el=>ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>el.classList.add('in')}));}
+})();
+</script>
+</body>
+</html>

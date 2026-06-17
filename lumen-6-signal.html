@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest Lumen — Signal | Dark precision web studio</title>
+<meta name="description" content="Quest Lumen builds fast, luminous websites. A remote studio of measured craft — the build, assembled in front of you.">
+<!-- Remta-adapted: fixed scroll-scrubbed hero + sticky word-by-word reveal. Gradients removed → single teal accent (house rule). -->
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=general-sans@400,500,600&f[]=space-mono@400,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07090C;        /* near-black stage */
+  --ink-2:#0C0F14;
+  --panel:#0E1218;      /* card surface */
+  --line:rgba(255,255,255,.10);
+  --line-2:rgba(255,255,255,.18);
+  --white:#EEF2F4;
+  --mut:#9AA3AB;
+  --mut-2:#5C656E;
+  --cover:#23282F;      /* word-reveal cover ink (NOT a gradient) */
+  --teal:#3EE0C8;       /* the only accent */
+  --teal-deep:#16B7A0;
+  --disp:'Clash Display',sans-serif;
+  --body:'General Sans',sans-serif;
+  --mono:'Space Mono',monospace;
+  --eo:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:var(--body);font-size:17px;line-height:1.6;color:var(--white);background:var(--ink);overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+::selection{background:var(--teal);color:#04201B}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border:3px solid var(--ink);border-radius:99px}
+h1,h2,h3{font-family:var(--disp);font-weight:600;line-height:1.02;letter-spacing:-.02em;text-wrap:balance}
+p{text-wrap:pretty}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,3.5vw,44px)}
+.kick{font-family:var(--mono);font-size:11.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);display:inline-flex;align-items:center;gap:10px}
+.kick::before{content:"";width:22px;height:1px;background:var(--teal)}
+
+/* fixed hero media (Remta's fixed bg, photo not video) */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--ink)}
+.bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);will-change:transform}
+.bg .scrim{position:absolute;inset:0;background:rgba(5,7,10,.66)}      /* solid overlay, not gradient */
+.bg .vig{position:absolute;inset:0;box-shadow:inset 0 0 240px 60px rgba(5,7,10,.9)}
+main{position:relative;z-index:20;background:transparent}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:11px;font-family:var(--body);font-weight:600;font-size:14.5px;padding:14px 24px;border-radius:6px;border:1px solid var(--teal);background:var(--teal);color:#04201B;transition:transform .14s var(--eo),background .25s,box-shadow .3s}
+.btn:hover{background:#5CEAD5;box-shadow:0 0 0 1px var(--teal),0 10px 34px -12px rgba(62,224,200,.7)}
+.btn:active{transform:scale(.97)}
+.btn .ar{transition:transform .25s var(--eo)}
+.btn:hover .ar{transform:translateX(4px)}
+.btn-g{background:rgba(255,255,255,.04);color:var(--white);border-color:var(--line-2);box-shadow:none}
+.btn-g:hover{background:rgba(255,255,255,.09);border-color:var(--white);box-shadow:none}
+
+/* nav */
+header{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .35s,border-color .35s}
+header.stuck{background:rgba(7,9,12,.62);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:70px;max-width:1280px;margin:0 auto;padding:0 clamp(20px,3.5vw,44px)}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:600;font-size:21px;letter-spacing:-.01em}
+.brand .mk{width:13px;height:13px;background:var(--teal);flex:none;transform:rotate(45deg)}
+.nav-links{display:flex;gap:clamp(16px,2.2vw,34px);list-style:none;align-items:center}
+.nav-links a{font-size:14px;font-weight:500;color:var(--mut);transition:color .25s;padding:8px 0}
+.nav-links a:hover{color:var(--white)}
+@media(max-width:900px){.nav-links{display:none}}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:130px 0 90px}
+.hero h1{font-size:clamp(46px,8vw,108px);font-weight:600;letter-spacing:-.035em;line-height:.94;margin:24px 0 0;max-width:14ch}
+.hero h1 .w{display:inline-block;opacity:0;transform:translateY(40px);animation:rise .9s var(--eo) forwards}
+.hero h1 em{font-style:normal;color:var(--teal)}
+@media(prefers-reduced-motion:reduce){.hero h1 .w{opacity:1;transform:none;animation:none}}
+@keyframes rise{to{opacity:1;transform:none}}
+.hero .sub{font-size:clamp(16px,1.4vw,19px);color:var(--mut);max-width:50ch;margin:28px 0 34px;opacity:0;animation:rise .9s var(--eo) 1.05s forwards}
+.hero .sub b{color:var(--white);font-weight:600}
+.hero-acts{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:rise .9s var(--eo) 1.25s forwards}
+.hero-meta{display:flex;gap:clamp(20px,3vw,46px);margin-top:46px;padding-top:26px;border-top:1px solid var(--line);flex-wrap:wrap;opacity:0;animation:rise .9s var(--eo) 1.45s forwards}
+.hero-meta .v{font-family:var(--disp);font-weight:600;font-size:clamp(26px,3vw,40px);line-height:1}
+.hero-meta .v small{color:var(--teal);font-family:var(--mono);font-size:12px;margin-left:5px;letter-spacing:.04em}
+.hero-meta .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut-2);margin-top:7px}
+.scrollcue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut-2);display:flex;flex-direction:column;align-items:center;gap:9px;opacity:0;animation:rise .9s var(--eo) 1.7s forwards}
+.scrollcue .ln{width:1px;height:30px;background:var(--line-2);position:relative;overflow:hidden}
+.scrollcue .ln::after{content:"";position:absolute;top:-50%;left:0;width:100%;height:50%;background:var(--teal);animation:drip 1.8s var(--eo) infinite}
+@keyframes drip{0%{top:-50%}100%{top:100%}}
+@media(max-width:900px){.scrollcue{display:none}}
+
+/* sections */
+section{position:relative;z-index:20}
+.solid{background:var(--ink)}
+.band{padding:clamp(72px,10vw,150px) 0}
+.sec-head{max-width:780px;margin-bottom:clamp(40px,5vw,64px)}
+.sec-head h2{font-size:clamp(34px,5vw,66px);margin:18px 0 0;font-weight:600;letter-spacing:-.03em}
+.sec-head .lead{font-size:clamp(16px,1.4vw,18.5px);color:var(--mut);margin-top:20px;max-width:58ch}
+
+/* ===== WORD-BY-WORD REVEAL (Remta §3, de-gradient-ed) ===== */
+.reveal-sec{height:220vh;position:relative;background:var(--ink)}
+.reveal-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:0 clamp(20px,5vw,80px)}
+.reveal-text{position:relative;max-width:20ch;font-family:var(--disp);font-weight:500;font-size:clamp(28px,5.2vw,62px);line-height:1.32;letter-spacing:-.02em;text-align:center}
+.reveal-text .w{position:relative;display:inline-block;margin-right:.28em;color:var(--white)}     /* under layer: solid white */
+.reveal-text .w em{font-style:normal;color:var(--teal)}                                          /* accent keywords, no gradient */
+.reveal-text .w .cov{position:absolute;inset:0;color:var(--cover);transition:opacity .15s linear} /* cover ink fades off on scroll */
+.reveal-tag{position:absolute;left:clamp(20px,5vw,80px);top:clamp(70px,12vh,130px);font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut-2)}
+
+/* ===== FEATURE-MEDIA CARDS (Remta §4) ===== */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.5vw,20px)}
+@media(max-width:900px){.cards{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.cards{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .4s var(--eo),border-color .4s}
+.card:hover{transform:translateY(-5px);border-color:var(--line-2)}
+.card .bd{padding:26px 26px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.card .ix{font-family:var(--mono);font-size:12px;color:var(--teal);letter-spacing:.1em}
+.card h3{font-size:clamp(21px,2vw,27px);font-weight:600;letter-spacing:-.02em}
+.card p{font-size:14.5px;color:var(--mut);max-width:42ch}
+.card .ph{height:200px;overflow:hidden;border-top:1px solid var(--line)}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--eo)}
+.card:hover .ph img{transform:scale(1.05)}
+
+/* work strip (simple, photos) */
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.5vw,20px)}
+@media(max-width:900px){.work-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.work-grid{grid-template-columns:1fr}}
+.wk{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);transition:transform .4s var(--eo),border-color .4s}
+.wk:hover{transform:translateY(-5px);border-color:var(--line-2)}
+.wk .ph{height:220px;overflow:hidden;border-bottom:1px solid var(--line)}
+.wk .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--eo)}
+.wk:hover .ph img{transform:scale(1.05)}
+.wk .bd{padding:20px 22px 24px}
+.wk .cat{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
+.wk h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:8px 0 4px}
+.wk p{font-size:13.5px;color:var(--mut)}
+
+/* process */
+.steps{display:grid;grid-template-columns:repeat(5,1fr)}
+@media(max-width:900px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.steps{grid-template-columns:1fr}}
+.step{padding:30px 24px 40px;border-left:1px solid var(--line)}
+.step:first-child{border-left:none}
+@media(max-width:900px){.step{border-left:none;border-top:1px solid var(--line)}}
+.step .k{font-family:var(--mono);font-size:12px;color:var(--mut-2)}
+.step .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);margin:20px 0}
+.step h3{font-size:1.5rem;font-weight:600;margin-bottom:11px}
+.step p{color:var(--mut);font-size:.94rem}
+
+/* cta */
+.cta .box{background:var(--ink-2);border:1px solid var(--line);border-radius:18px;padding:clamp(44px,6vw,96px) clamp(24px,5vw,72px);text-align:center}
+.cta h2{font-size:clamp(38px,6vw,82px);font-weight:600;letter-spacing:-.035em;margin:16px auto 18px;max-width:15ch}
+.cta h2 em{font-style:normal;color:var(--teal)}
+.cta p{font-size:clamp(16px,1.4vw,19px);color:var(--mut);max-width:50ch;margin:0 auto 34px}
+.cta .acts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta .mail{margin-top:26px;font-family:var(--mono);font-size:13px;color:var(--mut-2)}
+.cta .mail a{color:var(--white);border-bottom:1px solid var(--line-2);padding-bottom:2px}
+.cta .mail a:hover{border-color:var(--teal)}
+
+footer{border-top:1px solid var(--line);padding:34px 0 40px;position:relative;z-index:20;background:var(--ink)}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--mut-2)}
+.foot a:hover{color:var(--teal)}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--eo),transform .9s var(--eo)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <img src="img/hero-workspace-dark.jpg" alt="">
+  <div class="scrim"></div><div class="vig"></div>
+</div>
+
+<header id="hdr"><div class="nav">
+  <a class="brand" href="#top"><span class="mk"></span>Quest Lumen</a>
+  <ul class="nav-links">
+    <li><a href="#manifesto">Studio</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="btn" href="#contact">Start a project <span class="ar">→</span></a>
+</div></header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero"><div class="wrap">
+    <span class="kick" style="opacity:0;animation:rise .9s var(--eo) .85s forwards">Remote web design &amp; development studio</span>
+    <h1 id="heroH"></h1>
+    <p class="sub">A studio of measured craft. We design and build sites that load in <b>under a second</b> and hold attention longer — assembled in front of you, not handed over as a flat picture.</p>
+    <div class="hero-acts">
+      <a class="btn" href="#contact">Start a project <span class="ar">→</span></a>
+      <a class="btn btn-g" href="#work">See the work</a>
+    </div>
+    <div class="hero-meta">
+      <div><div class="v">60<small>+</small></div><div class="k">Sites shipped</div></div>
+      <div><div class="v">12</div><div class="k">Industries served</div></div>
+      <div><div class="v">&lt;1<small>S</small></div><div class="k">Load-time target</div></div>
+      <div><div class="v">4.9<small>★</small></div><div class="k">Avg. client rating</div></div>
+    </div>
+  </div>
+  <div class="scrollcue" aria-hidden="true"><span>Scroll</span><span class="ln"></span></div>
+  </section>
+
+  <!-- WORD-BY-WORD REVEAL -->
+  <section class="reveal-sec" id="manifesto">
+    <div class="reveal-pin">
+      <span class="reveal-tag">The studio principle</span>
+      <p class="reveal-text" id="revealText"
+         data-text="We don't decorate pages. We engineer light — every line shipped fast, measured, and built to last."></p>
+    </div>
+  </section>
+
+  <!-- SERVICES (feature-media cards) -->
+  <section class="band solid" id="services"><div class="wrap">
+    <div class="sec-head rv">
+      <span class="kick">What we do</span>
+      <h2>Six disciplines, one beam of focus.</h2>
+      <p class="lead">Hire the whole studio or one capability. Each engagement is scoped, fixed, and shipped on a date you can hold us to.</p>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div></section>
+
+  <!-- WORK -->
+  <section class="band solid" id="work"><div class="wrap">
+    <div class="sec-head rv">
+      <span class="kick">Selected work — 2024–2026</span>
+      <h2>Builds, lit and launched.</h2>
+      <p class="lead">Six recent sites across as many industries. Mockups shown; live links shared on request.</p>
+    </div>
+    <div class="work-grid" id="workGrid"></div>
+  </div></section>
+
+  <!-- PROCESS -->
+  <section class="band solid" id="process"><div class="wrap">
+    <div class="sec-head rv">
+      <span class="kick">How it goes</span>
+      <h2>Five steps from blank to launched.</h2>
+    </div>
+    <div class="steps">
+      <div class="step rv"><div class="k">01</div><div class="dot"></div><h3>Discover</h3><p>We map your goals, audience, and the one job the site has to do.</p></div>
+      <div class="step rv"><div class="k">02</div><div class="dot"></div><h3>Design</h3><p>Type, layout, and motion drafted in the browser, not flat pictures.</p></div>
+      <div class="step rv"><div class="k">03</div><div class="dot"></div><h3>Build</h3><p>Hand-coded, version-controlled, tested across real devices.</p></div>
+      <div class="step rv"><div class="k">04</div><div class="dot"></div><h3>Launch</h3><p>Edge deploy, redirects, analytics, and a checklist you can read.</p></div>
+      <div class="step rv"><div class="k">05</div><div class="dot"></div><h3>Care</h3><p>Monitoring and monthly upkeep so the site stays fast after day one.</p></div>
+    </div>
+  </div></section>
+
+  <!-- CTA -->
+  <section class="band solid cta" id="contact"><div class="wrap">
+    <div class="box rv">
+      <span class="kick" style="display:inline-flex;justify-content:center">Now booking — 2026 builds</span>
+      <h2>Tell us what you want to <em>switch on.</em></h2>
+      <p>Send a few sentences about your project. You'll hear back from a person, with a real plan, inside two working days.</p>
+      <div class="acts">
+        <a class="btn" href="mailto:hello@questlumen.com?subject=Start%20a%20project">Start a project <span class="ar">→</span></a>
+        <a class="btn btn-g" href="#work">Review the work</a>
+      </div>
+      <p class="mail">Or write directly — <a href="mailto:hello@questlumen.com">hello@questlumen.com</a></p>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="wrap foot">
+  <span>© 2026 Quest Lumen — built worldwide</span>
+  <span>Designed &amp; developed in the browser</span>
+  <a href="#top">Back to top ↑</a>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* hero heading — word-by-word load (Lexo-style cascade, kept subtle) */
+  const words = [['Websites',''],['that',''],['carry',''],['light.','em']];
+  const h = document.getElementById('heroH');
+  words.forEach((w,i)=>{
+    const s=document.createElement('span');s.className='w';
+    s.style.animationDelay=(.35+i*.13)+'s';
+    s.innerHTML = w[1]==='em' ? '<em>'+w[0]+'</em>' : w[0];
+    h.appendChild(s); h.appendChild(document.createTextNode(' '));
+  });
+
+  /* build feature-media cards */
+  const SVC=[
+    ["Web Design","Interface and layout grounded in your content, not a template.","hero-workspace-light"],
+    ["Web Development","Hand-built front ends and headless back ends that stay fast under load.","work-keyboard"],
+    ["Brand & Identity","Naming, type, and a visual system that reads the same everywhere.","work-flatlay"],
+    ["Motion & Interaction","WebGL, scroll choreography, and micro-states that reward a click.","work-studio-console"],
+    ["SEO & Performance","Core Web Vitals, structured data, and the boring work that ranks.","work-dashboard"],
+    ["Care & Hosting","Monitoring, edge hosting, and monthly upkeep after the launch.","work-person-laptop"]
+  ];
+  const cards=document.getElementById('cards');
+  SVC.forEach((s,i)=>{const c=document.createElement('article');c.className='card rv';
+    c.innerHTML=`<div class="bd"><span class="ix">0${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></div>
+    <div class="ph"><img src="img/${s[2]}.jpg" alt="${s[0]}" loading="lazy"></div>`;cards.appendChild(c);});
+
+  /* build work grid */
+  const W=[
+    ["E-commerce","Halo Coffee Roasters","Shopify · Brand · SEO","work-coffee"],
+    ["Healthcare","Northwind Patient Portal","React · A11y · System","work-clinic"],
+    ["Portfolio","Studio Orbit","Three.js · GSAP · Motion","work-person-laptop"],
+    ["Fintech","Ledger Finance","Next.js · Charts · Perf","work-fintech-dark"],
+    ["Construction","Terra Build Group","Astro · CMS · SEO","work-house-pool"],
+    ["Media","Aria Streaming","Svelte · Motion · Brand","work-studio-dark"]
+  ];
+  const wg=document.getElementById('workGrid');
+  W.forEach(w=>{const a=document.createElement('article');a.className='wk rv';
+    a.innerHTML=`<div class="ph"><img src="img/${w[3]}.jpg" alt="${w[1]} — ${w[0]}" loading="lazy"></div>
+    <div class="bd"><span class="cat">${w[0]}</span><h3>${w[1]}</h3><p>${w[2]}</p></div>`;wg.appendChild(a);});
+
+  /* build word-reveal layers */
+  const rt=document.getElementById('revealText');
+  const KEYS=new Set(['engineer','light','fast,','last.']);
+  const parts=rt.dataset.text.split(' ');
+  parts.forEach(word=>{
+    const span=document.createElement('span');span.className='w';
+    const accent=KEYS.has(word.toLowerCase());
+    span.innerHTML=(accent?'<em>'+word+'</em>':word)+'<span class="cov" aria-hidden="true">'+word+'</span>';
+    rt.appendChild(span);rt.appendChild(document.createTextNode(' '));
+  });
+  const covers=[...rt.querySelectorAll('.cov')];
+
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.create({start:30,onUpdate:s=>document.getElementById('hdr').classList.toggle('stuck',s.scroll()>30)});
+
+  if(reduce){
+    document.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));
+    covers.forEach(c=>c.style.opacity=0);
+  }else{
+    gsap.utils.toArray('.rv').forEach(el=>ScrollTrigger.create({trigger:el,start:'top 88%',once:true,onEnter:()=>el.classList.add('in')}));
+
+    /* hero media scrub — scale + parallax as it leaves (Remta scrubbing feel) */
+    gsap.to('.bg img',{yPercent:8,scale:1.14,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+
+    /* word-by-word reveal driven by section scroll progress */
+    ScrollTrigger.create({
+      trigger:'#manifesto',start:'top top',end:'bottom bottom',scrub:.4,
+      onUpdate:s=>{
+        const p=s.progress, n=covers.length;
+        covers.forEach((c,i)=>{
+          const a=i/n, b=(i+1)/n;                 /* this word's slice of the scroll */
+          const local=(p-a)/(b-a);
+          c.style.opacity=Math.max(0,Math.min(1,1-local));
+        });
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

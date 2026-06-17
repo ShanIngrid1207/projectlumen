@@ -2,221 +2,373 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Quest Lumen — Compare Homepage Designs</title>
+<title>Quest Lumen — Design Directions Showcase</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Seven homepage design directions for Quest Lumen — a web design & development studio, including two scroll-into-the-screen 3D builds. Compare side by side.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital@1&family=Hanken+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#080A10;--bar:#0E1119;--panel:#11151F;--ink:#EAF0FA;--mute:#8893A6;
-    --line:rgba(191,227,255,.12);--line-2:rgba(191,227,255,.22);--accent:#BFE3FF;
-    --display:"Khand",sans-serif;--sans:"Hanken Grotesk",sans-serif;--mono:"Spline Sans Mono",monospace;
-    --ease:cubic-bezier(.16,.84,.3,1);
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
-    display:flex;flex-direction:column;min-height:100%;overflow:hidden}
-  a{color:inherit;text-decoration:none}
-  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+:root{
+  --paper:#F5F1E9;--card:#FCFAF4;--ink:#1C1812;--ink-2:#4A4438;--mute:#8B8270;
+  --line:#E0D8C6;--line-2:#CBC1AA;--terra:#B96A2E;--terra-deep:#9A551F;
+  --serif:'Marcellus',serif;--ital:'EB Garamond',serif;--sans:'Hanken Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+  --eo:cubic-bezier(.23,1,.32,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:var(--terra);color:#fff}
+:focus-visible{outline:2px solid var(--terra-deep);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1480px;margin:0 auto;padding:0 clamp(20px,3vw,44px)}
 
-  /* Toolbar */
-  .bar{flex:0 0 auto;background:var(--bar);display:flex;align-items:center;gap:1rem;
-    padding:.8rem 1.2rem;flex-wrap:wrap;z-index:10;border-bottom:1px solid var(--line)}
-  .bar__title{display:flex;align-items:center;gap:.7rem;margin-right:auto;min-width:0}
-  .bar__mk{width:30px;height:30px;border-radius:8px;border:1px solid var(--line-2);display:grid;place-items:center;flex:none}
-  .bar__mk span{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-  .bar__title b{font-family:var(--display);font-weight:600;font-size:1.28rem;letter-spacing:.01em;line-height:1}
-  .bar__title b i{font-style:normal;color:var(--mute)}
-  .bar__title small{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-top:3px}
-  .seg{display:inline-flex;background:#0A0D14;border:1px solid var(--line);border-radius:100px;padding:3px}
-  .seg button{font-family:var(--mono);font-size:.74rem;font-weight:500;padding:.5em 1.05em;border-radius:100px;color:var(--mute);transition:.25s var(--ease);letter-spacing:.04em}
-  .seg button.on{background:var(--accent);color:#06223A}
-  .toggle{display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:.74rem;color:var(--ink);letter-spacing:.03em}
-  .toggle input{accent-color:var(--accent);width:15px;height:15px}
-  .bar .hint{font-family:var(--mono);font-size:.66rem;color:var(--mute);letter-spacing:.04em}
-  @media(max-width:900px){.bar .hint{display:none}}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.1;text-wrap:balance}
+em{font-family:var(--ital);font-style:italic;color:var(--terra-deep)}
+.mlabel{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
 
-  /* Stage — SVG dot grid, no gradient */
-  .stage{flex:1 1 auto;overflow:auto;padding:28px;scroll-behavior:smooth;background-color:var(--bg);
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23151B27'/%3E%3C/svg%3E")}
-  .rail{display:flex;flex-direction:column;gap:clamp(34px,5vw,64px);align-items:center;width:fit-content;min-width:100%;margin-inline:auto}
+/* top bar */
+.bar{position:sticky;top:0;z-index:40;background:rgba(245,241,233,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar .in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:70px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:36px;height:36px;border-radius:8px;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:var(--serif);font-size:18px}
+.brand .t b{font-family:var(--serif);font-weight:400;font-size:17px;display:block;line-height:1.15}
+.brand .t span{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.bar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.seg{display:inline-flex;background:#ECE6D9;border:1px solid var(--line);border-radius:99px;padding:3px}
+.seg button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;font-weight:500;padding:.55em 1.2em;border-radius:99px;color:var(--mute);border:0;background:none;cursor:pointer;transition:.25s var(--eo);text-transform:uppercase}
+.seg button.on{background:var(--ink);color:#fff}
+.bench{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line-2);border-radius:99px;padding:9px 16px;transition:.25s}
+.bench:hover{border-color:var(--ink);color:var(--ink)}
 
-  .panel{flex:0 0 auto;display:flex;flex-direction:column;gap:12px;width:fit-content;max-width:100%}
-  .panel__head{display:flex;align-items:flex-end;justify-content:space-between;gap:.8rem}
-  .panel__label b{font-family:var(--display);font-weight:600;font-size:1.18rem;letter-spacing:.01em;display:block;line-height:1}
-  .panel__label .tag{font-family:var(--mono);font-size:.66rem;color:var(--mute);letter-spacing:.05em;display:block;margin-top:5px;max-width:38ch}
-  .panel__label .tag i{font-style:normal;color:var(--accent)}
-  .panel__open{display:inline-flex;align-items:center;gap:.4em;font-family:var(--mono);font-size:.72rem;font-weight:500;color:#06223A;
-    border-radius:100px;padding:.55em 1em;background:var(--accent);transition:.22s var(--ease);white-space:nowrap;letter-spacing:.03em}
-  .panel__open:hover{transform:translateY(-2px)}
-  .panel__open svg{width:.92em;height:.92em}
+/* hero */
+.hero{padding:clamp(44px,6vw,80px) 0 clamp(30px,4vw,52px);text-align:center}
+.hero h1{font-size:clamp(32px,4.6vw,62px);max-width:22ch;margin:14px auto 16px}
+.hero p{color:var(--ink-2);max-width:64ch;margin:0 auto;font-size:16.5px}
+.hero .mlabel{color:var(--terra-deep)}
+.hero .note{margin:22px auto 0;max-width:60ch;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:none;color:var(--mute);background:#EFE8D9;border:1px solid var(--line);border-radius:10px;padding:11px 16px;line-height:1.7}
+.hero .note b{color:var(--ink-2);font-weight:500}
 
-  .device{background:#05070C;border-radius:30px;padding:10px;position:relative;border:1px solid var(--line-2);
-    box-shadow:0 30px 60px rgba(0,0,0,.5)}
-  .device::before{content:"";position:absolute;top:15px;left:50%;transform:translateX(-50%);width:44px;height:5px;
-    background:rgba(191,227,255,.18);border-radius:100px;z-index:3}
-  .device iframe{display:block;border:0;border-radius:22px;background:#06070A;width:390px;height:760px}
+/* group divider */
+.group{grid-column:1/-1;display:flex;align-items:center;gap:18px;margin:clamp(22px,3vw,40px) 0 2px}
+.group:first-child{margin-top:0}
+.group .gl{font-family:var(--serif);font-size:clamp(20px,2vw,26px);white-space:nowrap}
+.group .gn{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-deep)}
+.group .rule{flex:1;height:1px;background:var(--line-2)}
 
-  body.mode-desktop .device{border-radius:14px;padding:8px}
-  body.mode-desktop .device::before{display:none}
-  body.mode-desktop .device iframe{width:1180px;height:720px;border-radius:8px}
+/* grid of design cards */
+.deck{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(22px,2.6vw,38px);padding-bottom:clamp(60px,8vw,100px)}
+@media(max-width:1020px){.deck{grid-template-columns:1fr}}
+.dcard{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(28,24,18,.07);display:flex;flex-direction:column}
+.dhead{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 24px 16px}
+.dhead .lt{display:flex;align-items:baseline;gap:14px}
+.dhead .letter{font-family:var(--serif);font-size:15px;color:var(--terra-deep);border:1px solid var(--line-2);border-radius:50%;width:34px;height:34px;display:grid;place-items:center;align-self:center}
+.dhead h2{font-size:clamp(22px,2vw,28px)}
+.dhead .tagline{font-family:var(--ital);font-style:italic;font-size:15px;color:var(--mute)}
+.open{display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:#fff;background:var(--ink);border-radius:99px;padding:10px 18px;transition:.25s var(--eo);flex:0 0 auto}
+.open:hover{background:var(--terra-deep);transform:translateY(-2px)}
+.open svg{width:.95em;height:.95em}
 
-  .stage::-webkit-scrollbar{height:12px;width:12px}
-  .stage::-webkit-scrollbar-track{background:transparent}
-  .stage::-webkit-scrollbar-thumb{background:rgba(191,227,255,.18);border-radius:100px;border:3px solid var(--bg)}
-  .stage::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+/* live preview: scaled iframe */
+.preview{position:relative;background:#E8E2D4;border-block:1px solid var(--line);overflow:hidden}
+.preview iframe{position:absolute;top:0;left:0;border:0;transform-origin:top left;background:#fff;pointer-events:auto}
+.preview .veil{position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:rgba(28,24,18,0);transition:background .3s;cursor:pointer}
+.preview .veil span{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(28,24,18,.78);border-radius:99px;padding:9px 18px;opacity:0;transition:opacity .3s}
+.preview .veil:hover span{opacity:1}
+.preview.live .veil{display:none}
+.tag3d{position:absolute;top:12px;right:12px;z-index:3;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(28,24,18,.7);border-radius:99px;padding:6px 11px}
 
-  @media(max-width:560px){
-    .bar{gap:.6rem;padding:.65rem .85rem}
-    .stage{padding:14px}
-    .rail{gap:16px}
-    .device iframe{width:86vw;max-width:390px;height:72vh}
-    body.mode-desktop .device iframe{width:86vw;height:72vh}
-  }
+.dbody{padding:18px 24px 24px;display:flex;flex-direction:column;gap:14px;flex:1}
+.dbody p{font-size:14.5px;color:var(--ink-2);max-width:74ch}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto}
+.chips span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-deep);background:#F4E5D5;border-radius:99px;padding:6px 12px}
+
+footer{border-top:1px solid var(--line);padding:34px 0 40px;text-align:center}
+footer p{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);line-height:2.2}
 </style>
 </head>
-<body class="mode-desktop">
+<body>
 
 <div class="bar">
-  <div class="bar__title">
-    <span class="bar__mk"><span></span></span>
-    <div>
-      <b>Quest <i>Lumen</i> — Compare Designs</b>
-      <small>Web design &amp; development studio · 7 directions</small>
+  <div class="wrap in">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">Q</span>
+      <span class="t"><b>Quest Lumen</b><span>Design Directions</span></span>
     </div>
-  </div>
-
-  <div class="seg" role="group" aria-label="Preview width">
-    <button id="btn-mobile">Mobile</button>
-    <button id="btn-desktop" class="on">Desktop</button>
-  </div>
-
-  <label class="toggle"><input type="checkbox" id="sync"> Sync scroll</label>
-
-  <span class="hint">Each frame is live &amp; scrolls on its own · scroll down to see all seven · 06 &amp; 07 are 3D — scroll inside them to dive in · best on a GPU</span>
-</div>
-
-<div class="stage" id="stage">
-  <div class="rail">
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>01 · Pulse</b><span class="tag"><i>Dark</i> — a current of light (Three.js beam + bloom)</span></div>
-        <a class="panel__open" href="lumen-1-pulse.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    <div class="bar-right">
+      <div class="seg" role="group" aria-label="Preview device">
+        <button id="segDesk" class="on">Desktop</button>
+        <button id="segMob">Mobile</button>
       </div>
-      <div class="device"><iframe class="frame" data-i="1" src="lumen-1-pulse.html" title="Pulse" loading="eager"></iframe></div>
+      <a class="bench" href="mailto:hello@questlumen.com">hello@questlumen.com</a>
     </div>
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>02 · Grid</b><span class="tag"><i>Dark</i> — interactive wireframe substrate (cursor-reactive)</span></div>
-        <a class="panel__open" href="lumen-2-grid.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </div>
-      <div class="device"><iframe class="frame" data-i="2" src="lumen-2-grid.html" title="Grid" loading="eager"></iframe></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>03 · Daylight</b><span class="tag"><i>Light</i> — editorial, kinetic type + matte 3D solids</span></div>
-        <a class="panel__open" href="lumen-3-daylight.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </div>
-      <div class="device"><iframe class="frame" data-i="3" src="lumen-3-daylight.html" title="Daylight" loading="lazy"></iframe></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>04 · Console</b><span class="tag"><i>Dark</i> — developer terminal, command palette + glowing core</span></div>
-        <a class="panel__open" href="lumen-4-console.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </div>
-      <div class="device"><iframe class="frame" data-i="4" src="lumen-4-console.html" title="Console" loading="lazy"></iframe></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>05 · Aurora</b><span class="tag"><i>Dark</i> — particle light-field that spells LUMEN, morphs on scroll</span></div>
-        <a class="panel__open" href="lumen-5-aurora.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </div>
-      <div class="device"><iframe class="frame" data-i="5" src="lumen-5-aurora.html" title="Aurora" loading="lazy"></iframe></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>06 · Studio Dive</b><span class="tag"><i>Light</i> — scroll into a real 3D desk; the monitor powers on into the site</span></div>
-        <a class="panel__open" href="lumen-desk.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </div>
-      <div class="device"><iframe class="frame" data-i="6" src="lumen-desk.html" title="Studio Dive" loading="lazy"></iframe></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel__head">
-        <div class="panel__label"><b>07 · CRT Dive</b><span class="tag"><i>Dark</i> — scroll into a retro CRT; amber screen boots up into the site</span></div>
-        <a class="panel__open" href="lumen-crt.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </div>
-      <div class="device"><iframe class="frame" data-i="7" src="lumen-crt.html" title="CRT Dive" loading="lazy"></iframe></div>
-    </div>
-
   </div>
 </div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="mlabel">Thirteen directions · one brand · June 2026</span>
+    <h1>Thirteen ways to <em>make it glow</em></h1>
+    <p>Every direction shares the same Quest Lumen content — the six services, the work, the five-step process — but each is built around its own concept and signature interaction. From a draggable before/after seam to a horizontal world you travel, a cursor-lit room, a hero that assembles as you scroll, and a physics playground you can throw. Hover a preview to interact with it live, or open any direction full screen.</p>
+    <p class="note">Tip: the last five are <b>3D / WebGL builds</b> that load model files. To see their previews render, open this page through a local server — e.g. <b>python -m http.server</b> in this folder, then visit <b>localhost:8000</b>. The first eight preview fine opened directly.</p>
+  </div>
+</header>
+
+<main class="wrap deck" id="deck">
+
+  <div class="group"><span class="gl">Signature interactions</span><span class="rule"></span><span class="gn">Rebuilt this round</span></div>
+
+  <!-- 1 · THE SEAM — headliner -->
+  <article class="dcard" data-src="lumen-1-pulse.html" style="grid-column:1/-1">
+    <div class="dhead">
+      <div class="lt"><span class="letter" style="background:var(--ink);color:#fff;border-color:var(--ink)">1</span><div><h2>The Seam <em style="font-size:.5em">· split-screen</em></h2><span class="tagline">drag the default into the redesign</span></div></div>
+      <a class="open" href="lumen-1-pulse.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then drag the seam</span></div></div>
+    <div class="dbody">
+      <p>Drag the vertical seam and a busted default page — Times type, blue links, a broken image — wipes into the dark cinematic Quest Lumen build. Every work card reuses the same mechanic: pull it from grey wireframe to launched photo. A split-screen that literally performs a redesign.</p>
+      <div class="chips"><span>Split-screen</span><span>Drag-to-reveal</span><span>Before / after</span><span>Dark cinematic</span><span>Saira</span></div>
+    </div>
+  </article>
+
+  <!-- 2 · THE STREET -->
+  <article class="dcard" data-src="lumen-2-grid.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">2</span><div><h2>The Street</h2><span class="tagline">scroll sideways through the studio</span></div></div>
+      <a class="open" href="lumen-2-grid.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact</span></div></div>
+    <div class="dbody">
+      <p>The whole site is one horizontal world. Vertical scroll becomes lateral travel through six stops, with three parallax depth layers — skyline, dashed ground, content — and a street-map progress HUD. Keeps the Stripe-style violet and navy system.</p>
+      <div class="chips"><span>Side-scroll</span><span>Parallax depth</span><span>Scroll-driven</span><span>Street-map HUD</span><span>Stripe-style</span></div>
+    </div>
+  </article>
+
+  <!-- 3 · FLASHLIGHT -->
+  <article class="dcard" data-src="lumen-3-daylight.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">3</span><div><h2>Flashlight</h2><span class="tagline">your cursor is the light</span></div></div>
+      <a class="open" href="lumen-3-daylight.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then move the cursor</span></div></div>
+    <div class="dbody">
+      <p>A pitch-dark hero where your cursor is a light — move it to reveal the luminous studio beneath. Work cards stay dim until you light them on hover. A new dark, editorial identity built on Fraunces serif with a single warm amber accent.</p>
+      <div class="chips"><span>Full-screen</span><span>Cursor-as-light</span><span>Reveal mask</span><span>Fraunces serif</span><span>Amber</span></div>
+    </div>
+  </article>
+
+  <!-- 4 · BUILT LIVE -->
+  <article class="dcard" data-src="lumen-4-console.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">4</span><div><h2>Built Live</h2><span class="tagline">watch the hero assemble</span></div></div>
+      <a class="open" href="lumen-4-console.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then scroll to build</span></div></div>
+    <div class="dbody">
+      <p>Scroll and the hero assembles itself from a blueprint — layout boxes snap in, type sets word by word, the image decodes blur-to-sharp, the theme switches on — while a live build console ticks off each step. Raycast-style OLED black with a red accent.</p>
+      <div class="chips"><span>Scroll-assembled</span><span>Blueprint → built</span><span>Build console</span><span>Raycast-style</span><span>Instrument Serif</span></div>
+    </div>
+  </article>
+
+  <!-- 5 · LOOSE PARTS -->
+  <article class="dcard" data-src="lumen-5-aurora.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">5</span><div><h2>Loose Parts</h2><span class="tagline">grab the work, throw it</span></div></div>
+      <a class="open" href="lumen-5-aurora.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then fling a card</span></div></div>
+    <div class="dbody">
+      <p>The six work tiles are real physics objects — grab one, fling it, watch it collide and settle with the others. A toy that proves the studio's motion craft. Warm Mastercard-style cream with circular chips and a single orange accent.</p>
+      <div class="chips"><span>Physics · matter.js</span><span>Drag + fling</span><span>Collisions</span><span>Mastercard-style</span><span>Sofia Sans</span></div>
+    </div>
+  </article>
+
+  <div class="group"><span class="gl">Prompt-adapted directions</span><span class="rule"></span><span class="gn">From external briefs</span></div>
+
+  <!-- 6 · SIGNAL -->
+  <article class="dcard" data-src="lumen-6-signal.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">6</span><div><h2>Signal</h2><span class="tagline">word-by-word reveal</span></div></div>
+      <a class="open" href="lumen-6-signal.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then scroll</span></div></div>
+    <div class="dbody">
+      <p>Adapted from a crypto-landing brief. A fixed, scroll-scrubbed hero photo with a sticky word-by-word reveal: a dark ink cover fades off each word as you scroll, exposing solid white and teal keywords, then feature-media cards. Clash Display + Space Mono.</p>
+      <div class="chips"><span>Scroll-scrubbed</span><span>Word-by-word</span><span>Teal</span><span>Clash Display</span></div>
+    </div>
+  </article>
+
+  <!-- 7 · FOLIO -->
+  <article class="dcard" data-src="lumen-7-folio.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">7</span><div><h2>Folio</h2><span class="tagline">sticky stacked cards</span></div></div>
+      <a class="open" href="lumen-7-folio.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact</span></div></div>
+    <div class="dbody">
+      <p>Adapted from a designer-portfolio brief. Monochrome black with a single red dot, position:sticky stacked project cards, a blend-difference custom cursor, chamfered corners, an accordion FAQ, and a giant edge-to-edge SVG wordmark footer. Cabinet Grotesk.</p>
+      <div class="chips"><span>Sticky stack</span><span>Blend-diff cursor</span><span>Mono + red dot</span><span>Cabinet Grotesk</span></div>
+    </div>
+  </article>
+
+  <!-- 8 · CASCADE -->
+  <article class="dcard" data-src="lumen-8-cascade.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">8</span><div><h2>Cascade</h2><span class="tagline">sequential load + light-wave</span></div></div>
+      <a class="open" href="lumen-8-cascade.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact</span></div></div>
+    <div class="dbody">
+      <p>Adapted from a price-tracker hero. A sequential word-by-word hero load, an animated SVG light-wave background, an inline-SVG tech-logo row, and a mobile hamburger overlay. Sky-cyan accent with a Sentient italic serif for emphasis words.</p>
+      <div class="chips"><span>Sequential load</span><span>SVG light-wave</span><span>Sky-cyan</span><span>Sentient serif</span></div>
+    </div>
+  </article>
+
+  <div class="group"><span class="gl">Dimensional · 3D</span><span class="rule"></span><span class="gn">Open via local server</span></div>
+
+  <!-- 9 · FLAGSHIP -->
+  <article class="dcard" data-src="lumen-flagship.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">9</span><div><h2>Flagship</h2><span class="tagline">drag-to-orbit CRT</span></div></div>
+      <a class="open" href="lumen-flagship.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><span class="tag3d">3D · needs server</span><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then drag the model</span></div></div>
+    <div class="dbody">
+      <p>A drag-to-orbit 3D hero: spin a retro CRT computer with your pointer (OrbitControls + bloom), a video texture playing "site being built" on the screen, an anime.js kinetic headline, and a magnetic CTA. The lighter of the two 3D heroes.</p>
+      <div class="chips"><span>Three.js</span><span>Drag-to-orbit</span><span>Video texture</span><span>Bloom</span><span>anime.js</span></div>
+    </div>
+  </article>
+
+  <!-- 10 · FLAGSHIP DESK -->
+  <article class="dcard" data-src="lumen-flagship-desk.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">10</span><div><h2>Flagship · Desk</h2><span class="tagline">big forward monitor</span></div></div>
+      <a class="open" href="lumen-flagship-desk.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><span class="tag3d">3D · heavy · needs server</span><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then drag the model</span></div></div>
+    <div class="dbody">
+      <p>The same drag-to-orbit hero on a full computer-desk model with a large forward-facing monitor — best for showing on-screen video. Heavier to load (~51 MB), so give it a moment. Three.js with OrbitControls and bloom.</p>
+      <div class="chips"><span>Three.js</span><span>Drag-to-orbit</span><span>Big monitor</span><span>Video</span><span>Heavy</span></div>
+    </div>
+  </article>
+
+  <!-- 11 · DESK DIVE -->
+  <article class="dcard" data-src="lumen-desk.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">11</span><div><h2>Desk Dive</h2><span class="tagline">scroll into the screen</span></div></div>
+      <a class="open" href="lumen-desk.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><span class="tag3d">3D · needs server</span><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then scroll</span></div></div>
+    <div class="dbody">
+      <p>Scroll and the camera dives INTO the desktop monitor; the screen surface then cross-fades to "become" the inner Quest Lumen site. A light daylight-studio palette with electric blue, Bricolage Grotesque + Geist.</p>
+      <div class="chips"><span>Scroll-dive</span><span>Camera into screen</span><span>glTF</span><span>Electric blue</span></div>
+    </div>
+  </article>
+
+  <!-- 12 · CRT DIVE -->
+  <article class="dcard" data-src="lumen-crt.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">12</span><div><h2>CRT Dive</h2><span class="tagline">phosphor + boot type</span></div></div>
+      <a class="open" href="lumen-crt.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><span class="tag3d">3D · needs server</span><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then scroll</span></div></div>
+    <div class="dbody">
+      <p>The same dive-into-the-screen technique on a retro CRT — a dark phosphor palette, amber accent, VT323 boot type, and subtle scanlines on the boot overlay. The most nostalgic, terminal read of the brand.</p>
+      <div class="chips"><span>Scroll-dive</span><span>Phosphor / amber</span><span>VT323 boot</span><span>glTF</span></div>
+    </div>
+  </article>
+
+  <!-- 13 · SHOWROOM -->
+  <article class="dcard" data-src="lumen-showroom.html">
+    <div class="dhead">
+      <div class="lt"><span class="letter">13</span><div><h2>Showroom</h2><span class="tagline">cinematic stage</span></div></div>
+      <a class="open" href="lumen-showroom.html" target="_blank" rel="noopener">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+    </div>
+    <div class="preview"><span class="tag3d">3D · needs server</span><div class="veil" role="button" tabindex="0" aria-label="Activate live preview"><span>Click to interact — then scroll</span></div></div>
+    <div class="dbody">
+      <p>A Lamborghini-inspired cinematic stage: a black showroom, a gold accent, Barlow Condensed, and a 3D dive into the screen. The most luxe and theatrical read of the Quest Lumen brand.</p>
+      <div class="chips"><span>Cinematic stage</span><span>Lamborghini-style</span><span>Gold</span><span>3D dive</span></div>
+    </div>
+  </article>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Quest Lumen · Design directions showcase · Prepared June 2026<br>Thirteen production-grade builds sharing the same content, imagery, and brand voice — each with its own concept and signature interaction.</p>
+  </div>
+</footer>
 
 <script>
 (function(){
-  var body=document.body;
-  var bm=document.getElementById('btn-mobile');
-  var bd=document.getElementById('btn-desktop');
-  var sync=document.getElementById('sync');
-  var frames=Array.prototype.slice.call(document.querySelectorAll('.frame'));
+  var DESK={w:1440,h:900},MOB={w:390,h:780};
+  var mode='desk';
+  var cards=Array.prototype.slice.call(document.querySelectorAll('.dcard'));
 
-  function setMode(mobile){
-    body.classList.toggle('mode-mobile',mobile);
-    body.classList.toggle('mode-desktop',!mobile);
-    bm.classList.toggle('on',mobile);
-    bd.classList.toggle('on',!mobile);
-  }
-  bm.addEventListener('click',function(){setMode(true);});
-  bd.addEventListener('click',function(){setMode(false);});
-
-  var locked=false;
-  function attach(){
-    frames.forEach(function(f){
-      var win;
-      try{ win=f.contentWindow; }catch(e){ return; }
-      try{
-        win.addEventListener('scroll',function(){
-          if(!sync.checked||locked) return;
-          locked=true;
-          var src=win.document.documentElement;
-          var max=Math.max(1,src.scrollHeight-win.innerHeight);
-          var ratio=win.scrollY/max;
-          frames.forEach(function(g){
-            if(g===f) return;
-            try{
-              var w=g.contentWindow,d=w.document.documentElement;
-              var m=Math.max(1,d.scrollHeight-w.innerHeight);
-              w.scrollTo(0,ratio*m);
-            }catch(e){}
-          });
-          requestAnimationFrame(function(){locked=false;});
-        },{passive:true});
-      }catch(e){}
+  function layout(){
+    cards.forEach(function(card){
+      var pv=card.querySelector('.preview');
+      var f=pv.querySelector('iframe');
+      var cw=pv.clientWidth;
+      var s,w,h;
+      if(mode==='desk'){
+        w=DESK.w;h=DESK.h;s=cw/w;
+        pv.style.height=(h*s)+'px';
+        if(f){f.style.width=w+'px';f.style.height=h+'px';f.style.transform='scale('+s+')';f.style.left='0px';}
+      }else{
+        w=MOB.w;h=MOB.h;
+        var ph=Math.min(560,cw*0.9);
+        s=ph/h;
+        pv.style.height=ph+'px';
+        if(f){f.style.width=w+'px';f.style.height=h+'px';f.style.transform='scale('+s+')';f.style.left=((cw-w*s)/2)+'px';}
+      }
     });
   }
-  var loaded=0;
-  frames.forEach(function(f){
-    f.addEventListener('load',function(){ loaded++; if(loaded===frames.length) attach(); });
+
+  function spawn(card){
+    var pv=card.querySelector('.preview');
+    if(pv.querySelector('iframe'))return;
+    var f=document.createElement('iframe');
+    var src=card.getAttribute('data-src');
+    f.src=src+(src.indexOf('?')<0?'?preview':'&preview');
+    f.title='Live preview';
+    f.loading='lazy';
+    pv.appendChild(f);
+    layout();
+  }
+
+  /* lazily create iframes as cards approach the viewport */
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){spawn(e.target);io.unobserve(e.target);}});
+    },{rootMargin:'300px 0px'});
+    cards.forEach(function(c){io.observe(c);});
+  }else{cards.forEach(spawn);}
+
+  /* veil: previews start non-interactive so the page scrolls naturally */
+  cards.forEach(function(card){
+    var pv=card.querySelector('.preview'),veil=pv.querySelector('.veil');
+    function activate(){spawn(card);pv.classList.add('live');}
+    veil.addEventListener('click',activate);
+    veil.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
+    /* leaving the card re-arms the veil so stray scrolls don't get trapped */
+    card.addEventListener('mouseleave',function(){pv.classList.remove('live');});
   });
 
-  sync.addEventListener('change',function(){
-    if(sync.checked){
-      try{
-        var w0=frames[0].contentWindow, d0=w0.document.documentElement;
-        var r=w0.scrollY/Math.max(1,d0.scrollHeight-w0.innerHeight);
-        frames.forEach(function(g){try{var w=g.contentWindow,d=w.document.documentElement;w.scrollTo(0,r*Math.max(1,d.scrollHeight-w.innerHeight));}catch(e){}});
-      }catch(e){}
-    }
-  });
+  /* device toggle */
+  var bd=document.getElementById('segDesk'),bm=document.getElementById('segMob');
+  function setMode(m){
+    mode=m;
+    bd.classList.toggle('on',m==='desk');
+    bm.classList.toggle('on',m==='mob');
+    layout();
+  }
+  bd.addEventListener('click',function(){setMode('desk');});
+  bm.addEventListener('click',function(){setMode('mob');});
+
+  window.addEventListener('resize',layout);
+  layout();
 })();
 </script>
-</body></html>
+</body>
+</html>
